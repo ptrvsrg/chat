@@ -47,7 +47,6 @@
    ```xml
       <command name="login">
          <name>USER_NAME</name>
-         <type>CHAT_CLIENT_NAME</type>
       </command>
    ```
 
@@ -92,12 +91,10 @@
            <listusers>
               <user>
                  <name>USER_1</name>
-                 <type>CHAT_CLIENT_1</type>
               </user>
               …
               <user>
                  <name>USER_N</name>
-                 <type>CHAT_CLIENT_N</type>
               </user>
            </listusers>
         </success>
