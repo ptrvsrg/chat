@@ -53,6 +53,7 @@ public abstract class AbstractServer
         AbstractRequestHandler messageHandler = createMessageHandler(clientSocket);
         ClientSession clientSession = new ClientSession(messageHandler, timeout);
         clientSession.start();
+        clientSession.addListener(this);
         clientSessions.add(clientSession);
     }
 
