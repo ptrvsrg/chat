@@ -4,8 +4,8 @@ import java.util.EventListener;
 import ru.nsu.ccfit.petrov.task5.listener.event.Event;
 
 /**
- * The type {@code Observer} is interface describing the behavior of listeners for objects of type
- * {@link ListeningSupport Observable}.
+ * The type {@code Listener} is interface that describes behavior of objects that subscribes to receive events from
+ * objects with {@link ListeningSupport} and processes its events.
  *
  * @author ptrvsrg
  */
@@ -13,9 +13,9 @@ public interface Listener
     extends EventListener {
 
     /**
-     * Handles the context of the {@link ListeningSupport Observable} object message.
+     * Processes the event from object with {@link ListeningSupport}.
      *
-     * @param event the context
+     * @param event the event
      */
     void processEvent(Event event);
 }
