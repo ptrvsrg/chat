@@ -8,25 +8,5 @@ import ru.nsu.ccfit.petrov.task5.listener.Event;
  *
  * @author ptrvsrg
  */
-@Getter
-@RequiredArgsConstructor
-public abstract class ConnectionEvent
-    implements Event {
-
-    /**
-     * The type {@code ConnectionEventType} is enum that describes event types that occur while working
-     * {@link ru.nsu.ccfit.petrov.task5.connection.Connection Connection} thread.
-     */
-    public enum ConnectionEventType {
-        /**
-         * Disconnect event.
-         */
-        DISCONNECT,
-        /**
-         * Message received event.
-         */
-        MESSAGE_RECEIVED
-    }
-
-    private final ConnectionEventType type;
-}
+public interface ConnectionEvent
+    extends Event {}

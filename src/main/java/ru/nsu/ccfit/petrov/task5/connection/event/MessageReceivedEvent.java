@@ -2,6 +2,7 @@ package ru.nsu.ccfit.petrov.task5.connection.event;
 
 import java.util.UUID;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import ru.nsu.ccfit.petrov.task5.message.Message;
 
 /**
@@ -11,21 +12,10 @@ import ru.nsu.ccfit.petrov.task5.message.Message;
  * @author ptrvsrg
  */
 @Getter
+@RequiredArgsConstructor
 public class MessageReceivedEvent
-    extends ConnectionEvent {
+    implements ConnectionEvent {
 
     private final UUID connectionId;
     private final Message message;
-
-    /**
-     * Instantiates a new {@code MessageReceivedEvent}.
-     *
-     * @param connectionId the connection id
-     * @param message      the message
-     */
-    public MessageReceivedEvent(UUID connectionId, Message message) {
-        super(ConnectionEventType.MESSAGE_RECEIVED);
-        this.connectionId = connectionId;
-        this.message = message;
-    }
 }
