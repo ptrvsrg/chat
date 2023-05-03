@@ -5,7 +5,7 @@ import java.util.UUID;
 import lombok.Getter;
 import ru.nsu.ccfit.petrov.task5.connection.Connection;
 import ru.nsu.ccfit.petrov.task5.connection.event.ConnectionEvent;
-import ru.nsu.ccfit.petrov.task5.connection.event.ConnectionEvent.ConnectionEventType;
+import ru.nsu.ccfit.petrov.task5.connection.event.MessageReceivedEvent;
 import ru.nsu.ccfit.petrov.task5.listener.Listener;
 import ru.nsu.ccfit.petrov.task5.listener.ListeningSupport;
 import ru.nsu.ccfit.petrov.task5.listener.Event;
@@ -81,7 +81,7 @@ public class Session
     }
 
     private void processConnectionEvent(ConnectionEvent event) {
-        if (event.getType() == ConnectionEventType.MESSAGE_RECEIVED) {
+        if (event.getClass() == MessageReceivedEvent.class) {
             stopwatch.reset();
         }
     }
