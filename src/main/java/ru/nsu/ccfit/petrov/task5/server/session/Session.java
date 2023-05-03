@@ -10,8 +10,8 @@ import ru.nsu.ccfit.petrov.task5.listener.Listener;
 import ru.nsu.ccfit.petrov.task5.listener.ListeningSupport;
 import ru.nsu.ccfit.petrov.task5.listener.Event;
 import ru.nsu.ccfit.petrov.task5.server.event.ServerEvent;
-import ru.nsu.ccfit.petrov.task5.server.event.ServerEvent.ServerEventType;
 import ru.nsu.ccfit.petrov.task5.server.event.SessionTimeoutEvent;
+import ru.nsu.ccfit.petrov.task5.server.event.StopwatchFinishedEvent;
 
 /**
  * The type {@code Session} is class that describes client session, starts and resets stopwatch, notifies about session
@@ -75,7 +75,7 @@ public class Session
     }
 
     private void processServerEvent(ServerEvent event) {
-        if (event.getType() == ServerEventType.STOPWATCH_FINISHED) {
+        if (event.getClass() == StopwatchFinishedEvent.class) {
             listeningSupport.notifyListeners(new SessionTimeoutEvent(Session.this));
         }
     }
