@@ -44,26 +44,26 @@
    + Client message
 
    ```xml
-      <command name="login">
-         <name>USER_NAME</name>
-         <type>CHAT_CLIENT_NAME</type>
-      </command>
+      <request name="login">
+         <chat>CHAT_NAME</chat>
+         <user>USER_NAME</user>
+      </request>
    ```
 
    + Server error answer
 
    ```xml
-      <error>
+      <response name="error">
         <message>REASON</message>
-      </error>
+      </response>
    ```
 
    + Server success answer
 
    ```xml
-      <success>
-        <session>UNIQUE_SESSION_ID</session>
-      </success>
+      <response name="success">
+         <session>SESSION_ID</session>
+      </response>
    ```
 
 2. Запрос списка пользователей чата
@@ -71,71 +71,73 @@
    + Client message
 
    ```xml
-      <command name="list">
-        <session>UNIQUE_SESSION_ID</session>
-      </command>
+      <request name="user_list">
+        <chat>CHAT_NAME</chat>
+        <session>SESSION_ID</session>
+      </request>
    ```
 
    + Server error answer
 
    ```xml
-      <error>
-         <message>REASON</message>
-      </error>
+      <response name="error">
+        <message>REASON</message>
+      </response>
    ```
 
    + Server success answer
 
    ```xml
-        <success>
-           <listusers>
-              <user>
-                 <name>USER_1</name>
-                 <type>CHAT_CLIENT_1</type>
-              </user>
-              …
-              <user>
-                 <name>USER_N</name>
-                 <type>CHAT_CLIENT_N</type>
-              </user>
-           </listusers>
-        </success>
+        <response name="success">
+          <chat>CHAT_NAME</chat>
+          <users>
+            <user>
+              <name>USER_1</name>
+            </user>
+            …
+            <user>
+              <name>USER_N</name>
+            </user>
+          </users>
+        </response>
      ```
 
-3. Сообщение от клиента серверу
+3. Отправка сообщения
 
    + Client message
 
    ```xml
-     <command name="message">
+     <request name="new_message">
+        <chat>CHAT_NAME</chat>
+        <session>SESSION_ID</session>
         <message>MESSAGE</message>
-        <session>UNIQUE_SESSION_ID</session>
-     </command>
+     </request>
      ```
 
    + Server error answer
    
    ```xml
-      <error>
+      <response name="error">
         <message>REASON</message>
-      </error>
+      </response>
    ```
 
    + Server success answer
  
    ```xml
-       <success>
-       </success>
+       <response name="success">
+       </response>
     ```
    
-4. Сообщение от сервера клиенту
+4. Отправка сообщения другим пользователем
 
    + Server message
 
    ```xml
-      <event name="message">
+      <event name="new_message">
+         <chat>CHAT_NAME</chat>
+         <name>USER_NAME</name>
          <message>MESSAGE</message>
-         <name>CHAT_NAME_FROM</name>
       </event>
    ```
 
@@ -144,24 +146,25 @@
    + Client message
    
    ```xml
-      <command name="logout">
-         <session>UNIQUE_SESSION_ID</session>
-      </command>
+      <request name="logout">
+         <chat>CHAT_NAME</chat>
+         <session>SESSION_ID</session>
+      </request>
    ```
    
    + Server error answer
    
    ```xml
-      <error>
-         <message>REASON</message>
-      </error>
+      <response name="error">
+        <message>REASON</message>
+      </response>
    ```
    
    + Server success answer
    
    ```xml
-      <success>
-      </success>
+       <response name="success">
+       </response>
    ```
    
 6. Новый клиент
@@ -169,7 +172,8 @@
    + Server message
    
    ```xml
-      <event name="userlogin">
+      <event name="login">
+         <chat>CHAT_NAME</chat>
          <name>USER_NAME</name>
       </event>
    ```
@@ -177,9 +181,10 @@
 7. Клиент отключился
 
    + Server message
-   
+
    ```xml
-      <event name="userlogout">
+      <event name="logout">
+         <chat>CHAT_NAME</chat>
          <name>USER_NAME</name>
       </event>
    ```
