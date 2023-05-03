@@ -6,10 +6,10 @@ import java.util.UUID;
 import org.w3c.dom.Element;
 import ru.nsu.ccfit.petrov.task5.connection.Connection;
 import ru.nsu.ccfit.petrov.task5.server.connection.ServerConnectionEventProcessor;
-import ru.nsu.ccfit.petrov.task5.server.event.LoginRequestReceivedEvent;
-import ru.nsu.ccfit.petrov.task5.server.event.LogoutRequestReceivedEvent;
-import ru.nsu.ccfit.petrov.task5.server.event.NewMessageRequestReceivedEvent;
-import ru.nsu.ccfit.petrov.task5.server.event.UserListRequestReceivedEvent;
+import ru.nsu.ccfit.petrov.task5.server.event.request.LoginRequestReceivedEvent;
+import ru.nsu.ccfit.petrov.task5.server.event.request.LogoutRequestReceivedEvent;
+import ru.nsu.ccfit.petrov.task5.server.event.request.NewMessageRequestReceivedEvent;
+import ru.nsu.ccfit.petrov.task5.server.event.request.UserListRequestReceivedEvent;
 
 /**
  * The type {@code XmlServerConnectionEventProcessor} is class that implements abstract method of
