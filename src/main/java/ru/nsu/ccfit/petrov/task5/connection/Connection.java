@@ -19,9 +19,9 @@ import ru.nsu.ccfit.petrov.task5.message.Message;
  * @author ptrvsrg
  */
 public abstract class Connection
-    extends Thread {
+    implements Runnable {
 
-    @Getter private final UUID connectionId = UUID.randomUUID();
+    @Getter private final UUID id = UUID.randomUUID();
     private final Socket clientSocket;
     /**
      * The client socket input stream.
@@ -67,10 +67,10 @@ public abstract class Connection
     public void run() {
         while (!clientSocket.isClosed() && clientSocket.isConnected()) {
             Message message = receive();
-            listeningSupport.notifyListeners(new MessageReceivedEvent(connectionId, message));
+            listeningSupport.notifyListeners(new MessageReceivedEvent(id, message));
         }
 
-        listeningSupport.notifyListeners(new DisconnectEvent(connectionId));
+        listeningSupport.notifyListeners(new DisconnectEvent(id));
     }
 
     /**
