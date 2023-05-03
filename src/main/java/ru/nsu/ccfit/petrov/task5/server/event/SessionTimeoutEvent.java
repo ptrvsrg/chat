@@ -1,6 +1,7 @@
 package ru.nsu.ccfit.petrov.task5.server.event;
 
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import ru.nsu.ccfit.petrov.task5.server.session.Session;
 
 /**
@@ -9,18 +10,9 @@ import ru.nsu.ccfit.petrov.task5.server.session.Session;
  * @author ptrvsrg
  */
 @Getter
+@RequiredArgsConstructor
 public class SessionTimeoutEvent
-    extends ServerEvent {
+    implements ServerEvent {
 
     private final Session session;
-
-    /**
-     * Instantiates a new {@code SessionTimeoutEvent}.
-     *
-     * @param session the session
-     */
-    public SessionTimeoutEvent(Session session) {
-        super(ServerEventType.SESSION_TIMEOUT);
-        this.session = session;
-    }
 }
