@@ -1,11 +1,11 @@
-package ru.nsu.ccfit.petrov.task5.server;
+package ru.nsu.ccfit.petrov.task5.server.session;
 
 import java.util.Timer;
 import java.util.TimerTask;
 import lombok.RequiredArgsConstructor;
 import ru.nsu.ccfit.petrov.task5.listener.ListeningSupport;
 import ru.nsu.ccfit.petrov.task5.listener.Listener;
-import ru.nsu.ccfit.petrov.task5.listener.event.TimerFinishedEvent;
+import ru.nsu.ccfit.petrov.task5.server.event.TimerFinishedEvent;
 
 
 /**
@@ -27,9 +27,6 @@ public class Stopwatch {
     private class StopwatchTask
         extends TimerTask {
 
-        /**
-         * The action to be performed by this timer task.
-         */
         @Override
         public void run() {
             millis += SECOND;
@@ -48,19 +45,26 @@ public class Stopwatch {
         timer.scheduleAtFixedRate(new StopwatchTask(), DELAY, PERIOD);
     }
 
+    /**
+     * Resets stopwatch.
+     */
     public void reset() {
         millis = 0;
     }
 
+    /**
+     * Stops stopwatch.
+     */
     public void stop() {
         timer.purge();
     }
 
+    /**
+     * Adds listener.
+     *
+     * @param listener the listener
+     */
     public void addListener(Listener listener) {
         listeningSupport.addListener(listener);
-    }
-
-    public void removeListener(Listener listener) {
-        listeningSupport.removeListener(listener);
     }
 }
