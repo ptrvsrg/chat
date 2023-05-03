@@ -2,7 +2,7 @@ package ru.nsu.ccfit.petrov.task5.server.event;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import ru.nsu.ccfit.petrov.task5.listener.event.Event;
+import ru.nsu.ccfit.petrov.task5.listener.Event;
 
 /**
  * The type {@code ServerEvent} is class that describes server events.

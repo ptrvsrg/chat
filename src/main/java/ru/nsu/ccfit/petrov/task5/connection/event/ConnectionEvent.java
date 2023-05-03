@@ -1,8 +1,6 @@
 package ru.nsu.ccfit.petrov.task5.connection.event;
 
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import ru.nsu.ccfit.petrov.task5.listener.event.Event;
+import ru.nsu.ccfit.petrov.task5.listener.Event;
 
 /**
  * The type {@code ConnectionEvent} is class that describes events that occur while working

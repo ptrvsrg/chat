@@ -8,7 +8,7 @@ import ru.nsu.ccfit.petrov.task5.connection.event.ConnectionEvent;
 import ru.nsu.ccfit.petrov.task5.connection.event.ConnectionEvent.ConnectionEventType;
 import ru.nsu.ccfit.petrov.task5.listener.Listener;
 import ru.nsu.ccfit.petrov.task5.listener.ListeningSupport;
-import ru.nsu.ccfit.petrov.task5.listener.event.Event;
+import ru.nsu.ccfit.petrov.task5.listener.Event;
 import ru.nsu.ccfit.petrov.task5.server.event.ServerEvent;
 import ru.nsu.ccfit.petrov.task5.server.event.ServerEvent.ServerEventType;
 import ru.nsu.ccfit.petrov.task5.server.event.SessionTimeoutEvent;

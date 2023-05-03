@@ -1,7 +1,6 @@
 package ru.nsu.ccfit.petrov.task5.listener;
 
 import java.util.ArrayList;
-import ru.nsu.ccfit.petrov.task5.listener.event.Event;
 
 /**
  * The type {@code Observable} is class that stores
