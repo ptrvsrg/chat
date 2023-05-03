@@ -1,6 +1,6 @@
 package ru.nsu.ccfit.petrov.task5.message.object;
 
-import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 import ru.nsu.ccfit.petrov.task5.message.Message.MessageSubtype;
 import ru.nsu.ccfit.petrov.task5.message.Message.MessageType;
@@ -53,7 +53,7 @@ public class JavaObjectMessageGenerator
     }
 
     @Override
-    public JavaObjectMessage createSuccessResponseMessage(String chatName, List<String> userNames) {
+    public JavaObjectMessage createSuccessResponseMessage(String chatName, Set<String> userNames) {
         return new JavaObjectMessage(MessageType.RESPONSE, MessageSubtype.SUCCESS, new Object[]{
             chatName,
             userNames

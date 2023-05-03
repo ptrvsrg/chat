@@ -1,6 +1,6 @@
 package ru.nsu.ccfit.petrov.task5.message.xml;
 
-import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -160,7 +160,7 @@ public class XmlMessageGenerator
     }
 
     @Override
-    public XmlMessage createSuccessResponseMessage(String chatName, List<String> userNames) {
+    public XmlMessage createSuccessResponseMessage(String chatName, Set<String> userNames) {
         Document xmlMessage = documentBuilder.newDocument();
 
         Element chatTag = xmlMessage.createElement("chat");

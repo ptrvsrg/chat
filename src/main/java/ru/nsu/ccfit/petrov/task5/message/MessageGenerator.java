@@ -1,6 +1,6 @@
 package ru.nsu.ccfit.petrov.task5.message;
 
-import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 /**
@@ -60,7 +60,7 @@ public interface MessageGenerator {
      * @param userNames the username list
      * @return the message, or {@code null} - invalid arguments
      */
-    Message createSuccessResponseMessage(String chatName, List<String> userNames);
+    Message createSuccessResponseMessage(String chatName, Set<String> userNames);
 
     /**
      * Creates error response message.
