@@ -15,6 +15,8 @@ import ru.nsu.ccfit.petrov.task5.message.Message;
 /**
  * The type {@code Connection} is class that contains client socket, sends and receives messages. {@code Connection}
  * Thread constantly receives messages from the socket and sends events
+ *
+ * @author ptrvsrg
  */
 public abstract class Connection
     extends Thread {

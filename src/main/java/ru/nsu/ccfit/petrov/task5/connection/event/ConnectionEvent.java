@@ -7,6 +7,8 @@ import ru.nsu.ccfit.petrov.task5.listener.event.Event;
 /**
  * The type {@code ConnectionEvent} is class that describes events that occur while working
  * {@link ru.nsu.ccfit.petrov.task5.connection.Connection Connection} thread.
+ *
+ * @author ptrvsrg
  */
 @Getter
 @RequiredArgsConstructor

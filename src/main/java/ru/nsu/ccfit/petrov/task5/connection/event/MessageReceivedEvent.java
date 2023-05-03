@@ -7,6 +7,8 @@ import ru.nsu.ccfit.petrov.task5.message.Message;
 /**
  * The type {@code MessageReceivedEvent} is class that describes event that occurs when server receives message from
  * client.
+ *
+ * @author ptrvsrg
  */
 @Getter
 public class MessageReceivedEvent

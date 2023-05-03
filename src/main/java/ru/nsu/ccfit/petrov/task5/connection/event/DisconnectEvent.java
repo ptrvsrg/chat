@@ -5,6 +5,8 @@ import lombok.Getter;
 
 /**
  * The type {@code DisconnectEvent} is class that describes event that occurs when client is disconnected.
+ *
+ * @author ptrvsrg
  */
 @Getter
 public class DisconnectEvent
