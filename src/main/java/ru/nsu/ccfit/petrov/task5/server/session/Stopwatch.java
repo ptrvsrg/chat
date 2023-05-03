@@ -5,7 +5,7 @@ import java.util.TimerTask;
 import lombok.RequiredArgsConstructor;
 import ru.nsu.ccfit.petrov.task5.listener.ListeningSupport;
 import ru.nsu.ccfit.petrov.task5.listener.Listener;
-import ru.nsu.ccfit.petrov.task5.server.event.TimerFinishedEvent;
+import ru.nsu.ccfit.petrov.task5.server.event.StopwatchFinishedEvent;
 
 
 /**
@@ -32,7 +32,7 @@ public class Stopwatch {
             millis += SECOND;
 
             if (millis == timeoutMillis) {
-                listeningSupport.notifyListeners(new TimerFinishedEvent());
+                listeningSupport.notifyListeners(new StopwatchFinishedEvent());
             }
         }
     }

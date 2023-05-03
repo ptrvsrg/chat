@@ -41,7 +41,7 @@ public abstract class ServerEvent
         /**
          * Timer finished server event type.
          */
-        TIMER_FINISHED
+        STOPWATCH_FINISHED
     }
 
     private final ServerEventType type;

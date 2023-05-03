@@ -5,13 +5,13 @@ package ru.nsu.ccfit.petrov.task5.server.event;
  *
  * @author ptrvsrg
  */
-public class TimerFinishedEvent
+public class StopwatchFinishedEvent
     extends ServerEvent {
 
     /**
      * Instantiates a new {@code TimerFinishedEvent}.
      */
-    public TimerFinishedEvent() {
-        super(ServerEventType.TIMER_FINISHED);
+    public StopwatchFinishedEvent() {
+        super(ServerEventType.STOPWATCH_FINISHED);
     }
 }
