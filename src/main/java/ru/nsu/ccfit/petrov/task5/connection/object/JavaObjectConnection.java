@@ -12,6 +12,8 @@ import ru.nsu.ccfit.petrov.task5.message.object.JavaObjectMessage;
 /**
  * The type {@code JavaObjectConnection} is class that implements abstract method of {@link Connection} for sending and
  * receiving Java objects.
+ *
+ * @author ptrvsrg
  */
 @Log4j2
 public class JavaObjectConnection

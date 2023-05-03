@@ -8,7 +8,9 @@ import ru.nsu.ccfit.petrov.task5.connection.xml.XmlConnection;
 import ru.nsu.ccfit.petrov.task5.server.config.ServerConfig.MessageFormat;
 
 /**
- * The type {@code ConnectionFactory} is class that instantiates new {@code Connection} by message format.
+ * The type {@code ConnectionFactory} is class that instantiates new {@link Connection} by message format.
+ *
+ * @author ptrvsrg
  */
 @Log4j2
 public class ConnectionFactory {
