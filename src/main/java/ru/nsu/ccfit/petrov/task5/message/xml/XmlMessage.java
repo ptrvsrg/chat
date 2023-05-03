@@ -1,70 +1,81 @@
 package ru.nsu.ccfit.petrov.task5.message.xml;
 
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import ru.nsu.ccfit.petrov.task5.message.Message;
 
 /**
- * The type {@code XmlMessage} is class that implements {@link Message} for sending XML files over sockets.
+ * The type {@code XmlMessage} is class that extends {@link Message} for sending XML files over sockets.
  *
  * @author ptrvsrg
  */
-@Getter
-@RequiredArgsConstructor
 public class XmlMessage
-    implements Message {
+    extends Message {
 
-    private final Document xmlFile;
+    /**
+     * Instantiates a new {@code XmlMessage}.
+     *
+     * @param xmlFile the xml file
+     */
+    public XmlMessage(Document xmlFile) {
+        super(null, null, null);
 
-    @Override
-    public MessageType getMessageType() {
+        initMessageType(xmlFile);
+        initMessageSubtype(xmlFile);
+        initData(xmlFile);
+    }
+
+    private void initMessageType(Document xmlFile) {
         Element rootTag = xmlFile.getDocumentElement();
         switch (rootTag.getTagName()) {
             case "request":
-                return MessageType.REQUEST;
+                messageType = MessageType.REQUEST;
+                break;
             case "response":
-                return MessageType.RESPONSE;
+                messageType = MessageType.RESPONSE;
+                break;
             case "event":
-                return MessageType.EVENT;
+                messageType = MessageType.EVENT;
+                break;
             default:
-                return null;
+                messageType = null;
         }
     }
 
-    @Override
-    public MessageSubtype getMessageSubtype() {
+    private void initMessageSubtype(Document xmlFile) {
         Element rootTag = xmlFile.getDocumentElement();
         switch (rootTag.getAttribute("name")) {
             case "login":
-                return MessageSubtype.LOGIN;
+                messageSubtype = MessageSubtype.LOGIN;
+                break;
             case "new_message":
-                return MessageSubtype.NEW_MESSAGE;
+                messageSubtype = MessageSubtype.NEW_MESSAGE;
+                break;
             case "user_list":
-                return MessageSubtype.USER_LIST;
+                messageSubtype = MessageSubtype.USER_LIST;
+                break;
             case "logout":
-                return MessageSubtype.LOGOUT;
+                messageSubtype = MessageSubtype.LOGOUT;
+                break;
             case "success":
-                return MessageSubtype.SUCCESS;
+                messageSubtype = MessageSubtype.SUCCESS;
+                break;
             case "error":
-                return MessageSubtype.ERROR;
+                messageSubtype = MessageSubtype.ERROR;
+                break;
             default:
-                return null;
+                messageSubtype = null;
         }
     }
 
-    @Override
-    public Object[] getData() {
+    private void initData(Document xmlFile) {
         Element rootTag = xmlFile.getDocumentElement();
         NodeList childElements = rootTag.getChildNodes();
-        Object[] data = new Object[childElements.getLength()];
+        data = new Object[childElements.getLength()];
 
         for (int i = 0; i < childElements.getLength(); ++i) {
             data[i] = childElements.item(i);
         }
-
-        return data;
     }
 }

@@ -1,16 +1,21 @@
 package ru.nsu.ccfit.petrov.task5.message;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+
 /**
- * The type Message is interface that describes behavior of messages.
+ * The type {@code Message} is class that describes content of messages.
  *
  * @author ptrvsrg
  */
-public interface Message {
+@Getter
+@AllArgsConstructor
+public abstract class Message {
 
     /**
      * The type {@code MessageType} is enum that describes message type.
      */
-    enum MessageType {
+    public enum MessageType {
         /**
          * Request message type.
          */
@@ -28,7 +33,7 @@ public interface Message {
     /**
      * The type {@code MessageSubtype} is enum that describes message subtype.
      */
-    enum MessageSubtype {
+    public enum MessageSubtype {
         /**
          * Login message subtype.
          */
@@ -55,24 +60,7 @@ public interface Message {
         ERROR
     }
 
-    /**
-     * Gets message type.
-     *
-     * @return the message type
-     */
-    MessageType getMessageType();
-
-    /**
-     * Gets message subtype.
-     *
-     * @return the message subtype
-     */
-    MessageSubtype getMessageSubtype();
-
-    /**
-     * Get message data.
-     *
-     * @return the message data
-     */
-    Object[] getData();
+    protected MessageType messageType;
+    protected MessageSubtype messageSubtype;
+    protected Object[] data;
 }
