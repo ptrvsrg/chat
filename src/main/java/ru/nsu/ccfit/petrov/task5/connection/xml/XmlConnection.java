@@ -14,10 +14,24 @@ import ru.nsu.ccfit.petrov.task5.connection.Connection;
 import ru.nsu.ccfit.petrov.task5.message.Message;
 import ru.nsu.ccfit.petrov.task5.message.xml.XmlMessage;
 
+/**
+ * The type {@code XmlConnection} is class that implements abstract method of {@link Connection} for sending and
+ * receiving XML files.
+ *
+ * @author ptrvsrg
+ */
 @Log4j2
 public class XmlConnection
     extends Connection {
 
+    /**
+     * Instantiates a new {@code XmlConnection}.
+     *
+     * @param socket the socket
+     * @throws IOException if an I/O error occurs when creating the input stream, the socket is closed, the socket is
+     *                     not connected, or the socket input has been shutdown using
+     *                     {@link java.net.Socket#shutdownInput()}
+     */
     public XmlConnection(Socket socket)
         throws IOException {
         super(socket);
