@@ -1,4 +1,4 @@
-package ru.nsu.ccfit.petrov.task5.server.config;
+package ru.nsu.ccfit.petrov.task5.client.config;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -8,22 +8,26 @@ import org.apache.logging.log4j.Level;
 import ru.nsu.ccfit.petrov.task5.message.MessageFormat;
 
 @Log4j2
-public class ServerConfig {
+public class ClientConfig {
 
-    private static final String CONFIG_FILE_NAME = "server.properties";
+    private static final String CONFIG_FILE_NAME = "client.properties";
     private static final Properties properties = new Properties();
 
-    private ServerConfig() {
+    private ClientConfig() {
         throw new IllegalStateException("Utility class");
     }
 
     static {
-        try (InputStream configFile = ServerConfig.class.getClassLoader().getResourceAsStream(CONFIG_FILE_NAME)) {
+        try (InputStream configFile = ClientConfig.class.getClassLoader().getResourceAsStream(CONFIG_FILE_NAME)) {
             properties.load(configFile);
         } catch (IOException e) {
             log.catching(Level.FATAL, e);
             throw new RuntimeException(e);
         }
+    }
+
+    public static String getHostName() {
+        return properties.getProperty("connection.hostname");
     }
 
     public static int getPort() {

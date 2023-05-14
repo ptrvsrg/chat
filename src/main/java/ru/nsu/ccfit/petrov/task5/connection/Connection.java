@@ -1,84 +1,112 @@
 package ru.nsu.ccfit.petrov.task5.connection;
 
+import java.io.Closeable;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
-import java.util.UUID;
-import lombok.Getter;
-import ru.nsu.ccfit.petrov.task5.listener.Listener;
-import ru.nsu.ccfit.petrov.task5.listener.ListeningSupport;
-import ru.nsu.ccfit.petrov.task5.connection.event.DisconnectEvent;
-import ru.nsu.ccfit.petrov.task5.connection.event.MessageReceivedEvent;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.TransformerException;
+import lombok.extern.log4j.Log4j2;
+import org.w3c.dom.Document;
+import org.xml.sax.SAXException;
 import ru.nsu.ccfit.petrov.task5.message.Message;
+import ru.nsu.ccfit.petrov.task5.message.MessageFormat;
+import ru.nsu.ccfit.petrov.task5.message.XmlUtils;
+import ru.nsu.ccfit.petrov.task5.server.config.ServerConfig;
 
-/**
- * The type {@code Connection} is class that contains client socket, sends and receives messages. {@code Connection}
- * Thread constantly receives messages from the socket and sends events
- *
- * @author ptrvsrg
- */
-public abstract class Connection
-    implements Runnable {
+@Log4j2
+public class Connection
+    implements Closeable {
 
-    @Getter private final UUID id = UUID.randomUUID();
     private final Socket clientSocket;
-    /**
-     * The client socket input stream.
-     */
-    protected final ObjectInputStream in;
-    /**
-     * The client socket output stream.
-     */
-    protected final ObjectOutputStream out;
-    private final ListeningSupport listeningSupport = new ListeningSupport();
+    private final ObjectInputStream in;
+    private final ObjectOutputStream out;
 
-    /**
-     * Instantiates a new Connection.
-     *
-     * @param clientSocket the client socket
-     * @throws IOException if an I/O error occurs when creating the input stream, the socket is closed, the socket is
-     *                     not connected, or the socket input has been shutdown using
-     *                     {@link java.net.Socket#shutdownInput()}
-     */
-    protected Connection(Socket clientSocket)
+    public Connection(Socket clientSocket)
         throws IOException {
         this.clientSocket = clientSocket;
-        this.in = new ObjectInputStream(clientSocket.getInputStream());
         this.out = new ObjectOutputStream(clientSocket.getOutputStream());
+        this.in = new ObjectInputStream(clientSocket.getInputStream());
     }
 
-    /**
-     * Sends message over socket.
-     *
-     * @param message the message
-     * @return {@code true} - message is sent, {@code false} - sending error is happened or message format is invalid
-     */
-    public abstract boolean send(Message message);
+    public void send(Message message)
+        throws IOException {
+        MessageFormat messageFormat = ServerConfig.getMessageFormat();
 
-    /**
-     * Receives message through socket.
-     *
-     * @return the message, or {@code null} - receiving error is happened, or message format is invalid
-     */
-    public abstract Message receive();
+        switch (messageFormat) {
+            case JAVA_OBJECT:
+                sendJavaObject(message);
+                break;
+            case XML_FILE:
+                sendXmlFile(message);
+                break;
+        }
+    }
 
-    @Override
-    public void run() {
-        while (!clientSocket.isClosed() && clientSocket.isConnected()) {
-            Message message = receive();
-            listeningSupport.notifyListeners(new MessageReceivedEvent(id, message));
+    private void sendJavaObject(Message message)
+        throws IOException {
+        out.writeObject(message);
+    }
+
+    private void sendXmlFile(Message message)
+        throws IOException {
+        String xmlMessage;
+        try {
+            Document document = XmlUtils.messageToDocument(message);
+            xmlMessage = XmlUtils.documentToString(document);
+        } catch (ParserConfigurationException | TransformerException e) {
+            return;
         }
 
-        listeningSupport.notifyListeners(new DisconnectEvent(id));
+        out.writeObject(xmlMessage);
     }
 
-    /**
-     * Add listener.
-     *
-     * @param listener the listener
-     */
-    public void addListener(Listener listener) {
-        listeningSupport.addListener(listener);
+    public Message receive()
+        throws IOException {
+        MessageFormat messageFormat = ServerConfig.getMessageFormat();
+
+        switch (messageFormat) {
+            case JAVA_OBJECT:
+                return receiveJavaObject();
+            case XML_FILE:
+                return receiveXmlFile();
+        }
+
+        return null;
+    }
+
+    private Message receiveJavaObject()
+        throws IOException {
+        try {
+            Object o = in.readObject();
+            return (Message) o;
+        } catch (ClassNotFoundException | ClassCastException e) {
+            return null;
+        }
+    }
+
+    private Message receiveXmlFile()
+        throws IOException {
+        String xmlMessage;
+        try {
+            xmlMessage = (String) in.readObject();
+        } catch (ClassNotFoundException | ClassCastException e) {
+            return null;
+        }
+
+        try {
+            return XmlUtils.documentToMessage(XmlUtils.stringToDocument(xmlMessage));
+        } catch (ParserConfigurationException | IOException | SAXException e) {
+            return null;
+        }
+    }
+
+    @Override
+    public void close()
+        throws IOException {
+        clientSocket.close();
+        in.close();
+        out.close();
     }
 }
