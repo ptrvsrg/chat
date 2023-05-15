@@ -26,7 +26,7 @@ public class ClientManager {
         clientHandlers.execute(new RegisterTask(connection));
     }
 
-    private void sendAll(Message message) {
+    private void sendEvent(Message message) {
         for (Connection connection : dataBase.getUsers().values()) {
             try {
                 connection.send(message);
@@ -44,7 +44,7 @@ public class ClientManager {
         String userName = dataBase.getUserByConnection(connection);
         if (userName != null) {
             dataBase.removeUser(userName);
-            sendAll(Message.newLogoutEvent(userName));
+            sendEvent(Message.newLogoutEvent(userName));
         }
     }
 
@@ -81,7 +81,7 @@ public class ClientManager {
                     dataBase.addUser(userName, connection);
                     connection.send(Message.newSuccessResponse(requestId));
 
-                    sendAll(Message.newLoginEvent(userName));
+                    sendEvent(Message.newLoginEvent(userName));
 
                     break;
                 } catch (IOException e) {
@@ -121,7 +121,7 @@ public class ClientManager {
                         String messageContent = request.getMessageContent();
 
                         connection.send(Message.newSuccessResponse(requestId));
-                        sendAll(Message.newNewMessageEvent(userName, messageContent));
+                        sendEvent(Message.newNewMessageEvent(userName, messageContent));
                         break;
                     }
                     case USER_LIST: {
@@ -135,7 +135,7 @@ public class ClientManager {
                         UUID requestId = request.getId();
 
                         connection.send(Message.newSuccessResponse(requestId));
-                        sendAll(Message.newLogoutEvent(userName));
+                        sendEvent(Message.newLogoutEvent(userName));
 
                         dataBase.removeUser(userName);
                         closeConnection(connection);
