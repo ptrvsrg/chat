@@ -3,6 +3,7 @@ package ru.nsu.ccfit.petrov.task5.client.view;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.FlowLayout;
+import java.awt.Font;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.Set;
@@ -14,6 +15,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
+import javax.swing.border.EmptyBorder;
 import lombok.RequiredArgsConstructor;
 import ru.nsu.ccfit.petrov.task5.client.Client;
 import ru.nsu.ccfit.petrov.task5.client.view.components.UsersDialog;
@@ -30,6 +32,8 @@ public class WorkSpaceFrame
     private static final String TITLE = "NSU Chat";
     private static final int WIDTH = 1200;
     private static final int HEIGHT = 700;
+    private static final int FONT_SIZE = 16;
+    private static final int BORDER_INSET = 10;
     private static final String USERS_BUTTON_TEXT = "Users";
     private static final String SEND_BUTTON_TEXT = "Send";
     private static final String USERNAME_MESSAGE = "Username: ";
@@ -62,6 +66,11 @@ public class WorkSpaceFrame
 
     private JPanel createToolPanel() {
         JTextArea messageArea = new JTextArea();
+        messageArea.setBorder(new EmptyBorder(BORDER_INSET, BORDER_INSET, BORDER_INSET, BORDER_INSET));
+        messageArea.setFont(new Font(Font.DIALOG, Font.PLAIN, FONT_SIZE));
+        messageArea.setLineWrap(true);
+        messageArea.setWrapStyleWord(true);
+
         JButton sendButton = new JButton(SEND_BUTTON_TEXT);
         sendButton.addActionListener(e -> {
             String messageContent = messageArea.getText();
@@ -72,6 +81,7 @@ public class WorkSpaceFrame
             messageArea.setText("");
             client.sendUserMessage(messageContent);
         });
+
         JButton usersButton = new JButton(USERS_BUTTON_TEXT);
         usersButton.addActionListener(e -> {
             Set<String> users = client.getUsers();
@@ -85,15 +95,21 @@ public class WorkSpaceFrame
         buttonGroup.add(usersButton);
 
         JPanel toolPanel = new JPanel(new BorderLayout());
-        toolPanel.add(new JScrollPane(messageArea), BorderLayout.CENTER);
+        toolPanel.add(new JScrollPane(messageArea, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
+                                      JScrollPane.HORIZONTAL_SCROLLBAR_NEVER), BorderLayout.CENTER);
         toolPanel.add(buttonGroup, BorderLayout.EAST);
 
         return toolPanel;
     }
 
     private JScrollPane createChatScrollArea() {
+        chatArea.setFont(new Font(Font.DIALOG, Font.PLAIN, FONT_SIZE));
+        chatArea.setBorder(new EmptyBorder(BORDER_INSET, BORDER_INSET, BORDER_INSET, BORDER_INSET));
         chatArea.setEditable(false);
-        return new JScrollPane(chatArea);
+        chatArea.setLineWrap(true);
+        chatArea.setWrapStyleWord(true);
+        return new JScrollPane(chatArea, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
+                               JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
     }
 
     private void registerUser() {
@@ -131,7 +147,7 @@ public class WorkSpaceFrame
             frame.dispose();
             SwingUtilities.invokeLater(StartMenuFrame::new);
         } else if (event instanceof LoginEvent) {
-            String eventMessage = String.format("User %s has joined the chat%n",
+            String eventMessage = String.format("%s has joined the chat%n",
                                                 ((LoginEvent) event).getUserName());
             chatArea.append(eventMessage);
         } else if (event instanceof NewMessageEvent) {
@@ -140,7 +156,7 @@ public class WorkSpaceFrame
                                                 ((NewMessageEvent) event).getMessageContent());
             chatArea.append(eventMessage);
         } else if (event instanceof LogoutEvent) {
-            String eventMessage = String.format("User %s has left the chat%n",
+            String eventMessage = String.format("%s has left the chat%n",
                                                 ((LogoutEvent) event).getUserName());
             chatArea.append(eventMessage);
         }
