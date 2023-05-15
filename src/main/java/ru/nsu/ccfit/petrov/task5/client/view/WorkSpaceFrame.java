@@ -19,12 +19,12 @@ import javax.swing.border.EmptyBorder;
 import lombok.RequiredArgsConstructor;
 import ru.nsu.ccfit.petrov.task5.client.Client;
 import ru.nsu.ccfit.petrov.task5.client.view.components.UsersDialog;
-import ru.nsu.ccfit.petrov.task5.listener.Listener;
-import ru.nsu.ccfit.petrov.task5.listener.event.ClientErrorEvent;
-import ru.nsu.ccfit.petrov.task5.listener.event.Event;
-import ru.nsu.ccfit.petrov.task5.listener.event.LoginEvent;
-import ru.nsu.ccfit.petrov.task5.listener.event.LogoutEvent;
-import ru.nsu.ccfit.petrov.task5.listener.event.NewMessageEvent;
+import ru.nsu.ccfit.petrov.task5.client.listener.Listener;
+import ru.nsu.ccfit.petrov.task5.client.listener.event.ClientErrorEvent;
+import ru.nsu.ccfit.petrov.task5.client.listener.event.Event;
+import ru.nsu.ccfit.petrov.task5.client.listener.event.LoginEvent;
+import ru.nsu.ccfit.petrov.task5.client.listener.event.LogoutEvent;
+import ru.nsu.ccfit.petrov.task5.client.listener.event.NewMessageEvent;
 
 public class WorkSpaceFrame
     implements Listener {

@@ -1,4 +1,4 @@
-package ru.nsu.ccfit.petrov.task5.client;
+package ru.nsu.ccfit.petrov.task5.client.handler;
 
 import java.io.IOException;
 import java.util.Map;
@@ -9,11 +9,11 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import ru.nsu.ccfit.petrov.task5.connection.Connection;
-import ru.nsu.ccfit.petrov.task5.listener.ListeningSupport;
-import ru.nsu.ccfit.petrov.task5.listener.event.ClientErrorEvent;
-import ru.nsu.ccfit.petrov.task5.listener.event.LoginEvent;
-import ru.nsu.ccfit.petrov.task5.listener.event.LogoutEvent;
-import ru.nsu.ccfit.petrov.task5.listener.event.NewMessageEvent;
+import ru.nsu.ccfit.petrov.task5.client.listener.ListeningSupport;
+import ru.nsu.ccfit.petrov.task5.client.listener.event.ClientErrorEvent;
+import ru.nsu.ccfit.petrov.task5.client.listener.event.LoginEvent;
+import ru.nsu.ccfit.petrov.task5.client.listener.event.LogoutEvent;
+import ru.nsu.ccfit.petrov.task5.client.listener.event.NewMessageEvent;
 import ru.nsu.ccfit.petrov.task5.message.Message;
 
 public class MessageHandler {

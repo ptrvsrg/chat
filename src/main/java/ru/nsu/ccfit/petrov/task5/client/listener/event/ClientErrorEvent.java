@@ -1,4 +1,4 @@
-package ru.nsu.ccfit.petrov.task5.listener.event;
+package ru.nsu.ccfit.petrov.task5.client.listener.event;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
