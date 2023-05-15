@@ -1,8 +1,7 @@
 package ru.nsu.ccfit.petrov.task5.client.view;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.Toolkit;
@@ -15,13 +14,14 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
+import javax.swing.border.EmptyBorder;
 import lombok.RequiredArgsConstructor;
 import ru.nsu.ccfit.petrov.task5.client.view.components.BackgroundPanel;
 import ru.nsu.ccfit.petrov.task5.client.view.components.MenuButton;
 
 public class StartMenuFrame {
 
-    private static final String TITLE = "Welcome To NSU Chat";
+    private static final String TITLE = "Welcome to NSU Chat";
     private static final String BACKGROUND_IMAGE_FILE = "start_menu_background.gif";
     private static final String START_BUTTON_TITLE = "Start";
     private static final String ABOUT_BUTTON_TITLE = "About";
@@ -31,8 +31,8 @@ public class StartMenuFrame {
         "Designer: ptrvsrg\n" +
         "Developer: ptrvsrg\n" +
         "Source code: https://github.com/ptrvsrg/NSU_OOP_Java/tree/master/Task5";
-    private static final int WIDTH = 1200;
-    private static final int HEIGHT = 700;
+    private static final int WIDTH = 1000;
+    private static final int HEIGHT = 800;
     private final JFrame frame = new JFrame();
 
     public StartMenuFrame() {
@@ -47,29 +47,25 @@ public class StartMenuFrame {
         frame.setLocationRelativeTo(null);
         frame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
         frame.addWindowListener(new WindowClosingListener(frame));
-        frame.setLayout(new FlowLayout(FlowLayout.LEFT, 0, 0));
+        frame.setLayout(new BorderLayout());
 
         frame.getContentPane().setBackground(Color.WHITE);
-        frame.getContentPane().add(createBackgroundPanel());
-        frame.getContentPane().add(createButtonArea());
+        frame.getContentPane().add(createBackgroundPanel(), BorderLayout.CENTER);
+        frame.getContentPane().add(createButtonArea(), BorderLayout.SOUTH);
     }
 
     private BackgroundPanel createBackgroundPanel() {
         URL url = StartMenuFrame.class.getClassLoader().getResource(BACKGROUND_IMAGE_FILE);
         Image backgroundImage = Toolkit.getDefaultToolkit().getImage(url);
-        BackgroundPanel backgroundPanel = new BackgroundPanel(backgroundImage);
 
-        backgroundPanel.setPreferredSize(
-            new Dimension(3 * frame.getWidth() / 4, frame.getHeight()));
-
-        return backgroundPanel;
+        return new BackgroundPanel(backgroundImage);
     }
 
     private JPanel createButtonArea() {
         JPanel buttonArea = new JPanel();
-        buttonArea.setSize(frame.getWidth() / 2, frame.getHeight() / 2);
+        buttonArea.setBorder(new EmptyBorder(20, 20, 20, 0));
         buttonArea.setBackground(new Color(0, 0, 0, 0));
-        buttonArea.setLayout(new GridLayout(2, 1));
+        buttonArea.setLayout(new GridLayout(1, 2));
         buttonArea.add(createMenuButton(START_BUTTON_TITLE, e -> {
             SwingUtilities.invokeLater(WorkSpaceFrame::new);
             frame.dispose();
@@ -78,8 +74,6 @@ public class StartMenuFrame {
             JOptionPane.showMessageDialog(frame, ABOUT_PANEL_MESSAGE, ABOUT_PANEL_TITLE,
                                           JOptionPane.INFORMATION_MESSAGE);
         }));
-
-        buttonArea.setPreferredSize(new Dimension(frame.getWidth() / 4, frame.getHeight()));
 
         return buttonArea;
     }
