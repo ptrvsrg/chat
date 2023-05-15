@@ -148,15 +148,18 @@ public class WorkSpaceFrame
             String eventMessage = String.format("%s has joined the chat%n",
                                                 ((LoginEvent) event).getUserName());
             chatArea.append(eventMessage);
+            chatArea.repaint();
         } else if (event instanceof NewMessageEvent) {
             String eventMessage = String.format("%s : %s%n",
                                                 ((NewMessageEvent) event).getUserName(),
                                                 ((NewMessageEvent) event).getMessageContent());
             chatArea.append(eventMessage);
+            chatArea.repaint();
         } else if (event instanceof LogoutEvent) {
             String eventMessage = String.format("%s has left the chat%n",
                                                 ((LogoutEvent) event).getUserName());
             chatArea.append(eventMessage);
+            chatArea.repaint();
         }
     }
 
