@@ -135,6 +135,14 @@ public class WorkSpaceFrame
         JOptionPane.showMessageDialog(frame, reason, "Error", JOptionPane.ERROR_MESSAGE);
     }
 
+    private synchronized void dispose() {
+        if (!disposing) {
+            disposing = true;
+            frame.dispose();
+            SwingUtilities.invokeLater(StartMenuFrame::new);
+        }
+    }
+
     @Override
     public void processEvent(Event event) {
         if (event instanceof ClientErrorEvent) {
