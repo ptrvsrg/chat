@@ -26,13 +26,19 @@ public class Message
         ERROR
     }
 
-    private final UUID id = UUID.randomUUID();
+    private final UUID id;
     private final Type type;
     private final Subtype subtype;
     private final UUID requestId;
     private final String userName;
     private final String messageContent;
     private final String[] users;
+
+    public Message(Type type, Subtype subtype, UUID requestId, String userName,
+                   String messageContent, String[] users) {
+        this(UUID.randomUUID(), type, subtype, requestId, userName, messageContent, users);
+    }
+
 
     public static Message newLoginRequest(String userName) {
         return new Message(Type.REQUEST, Subtype.LOGIN, null, userName, null, null);
