@@ -18,7 +18,6 @@ public class Server {
     public void start() {
         try {
             serverSocket = new ServerSocket(ServerConfig.getPort());
-            log.info("Server started");
         } catch (IOException e) {
             log.info("Server didn't start");
             log.catching(Level.INFO, e);
@@ -36,7 +35,6 @@ public class Server {
 
                 Connection connection = new Connection(clientSocket);
                 clientManager.addClient(connection);
-                log.info("Client added");
             } catch (IOException e) {
                 log.info("Connection lost");
                 log.catching(Level.INFO, e);
