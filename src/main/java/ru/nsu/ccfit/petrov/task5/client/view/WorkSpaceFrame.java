@@ -70,7 +70,8 @@ public class WorkSpaceFrame
 
     private JPanel createToolPanel() {
         JTextArea messageArea = new JTextArea();
-        messageArea.setBorder(new EmptyBorder(BORDER_INSET, BORDER_INSET, BORDER_INSET, BORDER_INSET));
+        messageArea.setBorder(
+            new EmptyBorder(BORDER_INSET, BORDER_INSET, BORDER_INSET, BORDER_INSET));
         messageArea.setFont(new Font(Font.DIALOG, Font.PLAIN, FONT_SIZE));
         messageArea.setLineWrap(true);
         messageArea.setWrapStyleWord(true);
@@ -127,8 +128,6 @@ public class WorkSpaceFrame
                 break;
             }
         }
-
-        return userName;
     }
 
     private void createErrorPane(String reason) {
@@ -155,19 +154,25 @@ public class WorkSpaceFrame
                 dispose();
             }
         } else if (event instanceof LoginEvent) {
-            String eventMessage = String.format("%s has joined the chat%n",
-                                                ((LoginEvent) event).getUserName());
+            LoginEvent loginEvent = (LoginEvent) event;
+            String userName = loginEvent.getUserName();
+            String eventMessage = String.format("%s has joined the chat%n", userName);
+
             chatArea.append(eventMessage);
             chatArea.repaint();
         } else if (event instanceof NewMessageEvent) {
-            String eventMessage = String.format("%s : %s%n",
-                                                ((NewMessageEvent) event).getUserName(),
-                                                ((NewMessageEvent) event).getMessageContent());
+            NewMessageEvent newMessageEvent = (NewMessageEvent) event;
+            String userName = newMessageEvent.getUserName();
+            String messageContent = newMessageEvent.getMessageContent();
+            String eventMessage = String.format("%s : %s%n", userName, messageContent);
+
             chatArea.append(eventMessage);
             chatArea.repaint();
         } else if (event instanceof LogoutEvent) {
-            String eventMessage = String.format("%s has left the chat%n",
-                                                ((LogoutEvent) event).getUserName());
+            LogoutEvent logoutEvent = (LogoutEvent) event;
+            String userName = logoutEvent.getUserName();
+            String eventMessage = String.format("%s has left the chat%n", userName);
+
             chatArea.append(eventMessage);
             chatArea.repaint();
         }
