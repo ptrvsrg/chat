@@ -41,13 +41,17 @@ public class WorkSpaceFrame
     private final JFrame frame = new JFrame();
     private final Client client = new Client();
     private final JTextArea chatArea = new JTextArea();
+    private boolean disposing = false;
 
     public WorkSpaceFrame() {
         initFrame();
         frame.setVisible(true);
 
         client.addListener(this);
-        registerUser();
+        client.start();
+        if (!disposing) {
+            registerUser();
+        }
     }
 
     private void initFrame() {
@@ -111,24 +115,17 @@ public class WorkSpaceFrame
     }
 
     private void registerUser() {
-        String userName = getUserName();
-        if (userName == null) {
-            frame.dispose();
-            SwingUtilities.invokeLater(StartMenuFrame::new);
-            return;
-        }
+        while (!disposing) {
+            String userName = JOptionPane.showInputDialog(frame, USERNAME_MESSAGE, USERNAME_TITLE,
+                                                          JOptionPane.INFORMATION_MESSAGE);
+            if (userName == null) {
+                dispose();
+                return;
+            }
 
-        client.login(userName);
-    }
-
-    private String getUserName() {
-        String userName = JOptionPane.showInputDialog(frame, USERNAME_MESSAGE, USERNAME_TITLE,
-                                                      JOptionPane.INFORMATION_MESSAGE);
-
-        while (userName != null && userName.isEmpty()) {
-            createErrorPane("Username is invalid");
-            userName = JOptionPane.showInputDialog(frame, USERNAME_MESSAGE, USERNAME_TITLE,
-                                                   JOptionPane.INFORMATION_MESSAGE);
+            if (client.login(userName)) {
+                break;
+            }
         }
 
         return userName;

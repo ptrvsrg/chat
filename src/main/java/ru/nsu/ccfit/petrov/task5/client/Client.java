@@ -23,7 +23,7 @@ public class Client {
         listeningSupport.addListener(listener);
     }
 
-    public void login(String userName) {
+    public void start() {
         try {
             Socket clientSocket = new Socket(ClientConfig.getHostName(), ClientConfig.getPort());
             clientSocket.setSoTimeout(ClientConfig.getTimeout());
@@ -33,6 +33,7 @@ public class Client {
         }
     }
 
+    public boolean login(String userName) {
         Message response;
         try {
             response = messageHandler.sendRequest(Message.newLoginRequest(userName));
@@ -46,6 +47,8 @@ public class Client {
             closeClient(reason, false);
             return false;
         }
+
+        return true;
     }
 
     public Set<String> getUsers() {
@@ -86,7 +89,7 @@ public class Client {
         try {
             response = messageHandler.sendRequest(Message.newLogoutRequest());
         } catch (ExecutionException | InterruptedException e) {
-            closeClient("Connection error");
+            closeClient("Connection error", true);
             return;
         }
 
