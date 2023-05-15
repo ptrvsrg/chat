@@ -101,11 +101,6 @@ public class MessageHandler {
     public void shutdown() {
         sender.shutdown();
         receiver.shutdown();
-
-        try {
-            connection.close();
-        } catch (IOException e) {
-            listeningSupport.notifyListeners(new ClientErrorEvent("Connection closing error"));
-        }
+        connection.close();
     }
 }
