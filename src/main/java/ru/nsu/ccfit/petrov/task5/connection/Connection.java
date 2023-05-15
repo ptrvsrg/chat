@@ -48,7 +48,9 @@ public class Connection
 
     private void sendJavaObject(Message message)
         throws IOException {
-        out.writeObject(message);
+        synchronized (out) {
+            out.writeObject(message);
+        }
     }
 
     private void sendXmlFile(Message message)
@@ -61,7 +63,9 @@ public class Connection
             throw new IOException("Invalid message format : " + e);
         }
 
-        out.writeObject(xmlMessage);
+        synchronized (out) {
+            out.writeObject(xmlMessage);
+        }
     }
 
     public Message receive()
@@ -81,7 +85,9 @@ public class Connection
     private Message receiveJavaObject()
         throws IOException {
         try {
-            return (Message) in.readObject();
+            synchronized (in) {
+                return (Message) in.readObject();
+            }
         } catch (ClassNotFoundException | ClassCastException e) {
             throw new IOException("Invalid message format : " + e);
         }
@@ -91,7 +97,9 @@ public class Connection
         throws IOException {
         String xmlMessage;
         try {
-            xmlMessage = (String) in.readObject();
+            synchronized (in) {
+                xmlMessage = (String) in.readObject();
+            }
         } catch (ClassNotFoundException | ClassCastException e) {
             throw new IOException("Invalid message format : " + e);
         }
