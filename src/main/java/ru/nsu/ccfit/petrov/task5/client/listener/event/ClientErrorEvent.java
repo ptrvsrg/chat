@@ -9,4 +9,5 @@ public class ClientErrorEvent
     implements Event {
 
     private final String reason;
+    private final boolean terminated;
 }

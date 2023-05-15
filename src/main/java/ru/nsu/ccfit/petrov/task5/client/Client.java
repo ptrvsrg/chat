@@ -29,21 +29,22 @@ public class Client {
             clientSocket.setSoTimeout(ClientConfig.getTimeout());
             messageHandler = new MessageHandler(new Connection(clientSocket), listeningSupport);
         } catch (IOException e) {
-            closeClient("Server is not available");
-            return;
+            closeClient("Server is not available", true);
         }
+    }
 
         Message response;
         try {
             response = messageHandler.sendRequest(Message.newLoginRequest(userName));
         } catch (ExecutionException | InterruptedException e) {
-            closeClient("Connection error");
-            return;
+            closeClient("Connection error", true);
+            return false;
         }
 
         if (response.getSubtype() == Subtype.ERROR) {
             String reason = response.getMessageContent();
-            closeClient(reason);
+            closeClient(reason, false);
+            return false;
         }
     }
 
@@ -52,13 +53,13 @@ public class Client {
         try {
             response = messageHandler.sendRequest(Message.newUserListRequest());
         } catch (ExecutionException | InterruptedException e) {
-            closeClient("Connection error");
+            closeClient("Connection error", true);
             return new HashSet<>();
         }
 
         if (response.getSubtype() == Subtype.ERROR) {
             String reason = response.getMessageContent();
-            closeClient(reason);
+            closeClient(reason, false);
             return new HashSet<>();
         }
 
@@ -70,13 +71,13 @@ public class Client {
         try {
             response = messageHandler.sendRequest(Message.newNewMessageRequest(messageText));
         } catch (ExecutionException | InterruptedException e) {
-            closeClient("Connection error");
+            closeClient("Connection error", true);
             return;
         }
 
         if (response.getSubtype() == Subtype.ERROR) {
             String reason = response.getMessageContent();
-            closeClient(reason);
+            closeClient(reason, false);
         }
     }
 
@@ -91,15 +92,15 @@ public class Client {
 
         if (response.getSubtype() == Subtype.ERROR) {
             String reason = response.getMessageContent();
-            closeClient(reason);
+            closeClient(reason, false);
         } else {
             messageHandler.shutdown();
         }
     }
 
-    private void closeClient(String reason) {
-        listeningSupport.notifyListeners(new ClientErrorEvent(reason));
-        if (messageHandler != null) {
+    private void closeClient(String reason, boolean terminated) {
+        listeningSupport.notifyListeners(new ClientErrorEvent(reason, terminated));
+        if (terminated && messageHandler != null) {
             messageHandler.shutdown();
         }
     }

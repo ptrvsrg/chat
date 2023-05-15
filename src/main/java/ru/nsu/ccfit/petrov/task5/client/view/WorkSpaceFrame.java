@@ -141,9 +141,14 @@ public class WorkSpaceFrame
     @Override
     public void processEvent(Event event) {
         if (event instanceof ClientErrorEvent) {
-            createErrorPane(((ClientErrorEvent) event).getReason());
-            frame.dispose();
-            SwingUtilities.invokeLater(StartMenuFrame::new);
+            ClientErrorEvent clientErrorEvent = (ClientErrorEvent) event;
+            String reason = clientErrorEvent.getReason();
+            boolean terminated = clientErrorEvent.isTerminated();
+
+            createErrorPane(reason);
+            if (terminated) {
+                dispose();
+            }
         } else if (event instanceof LoginEvent) {
             String eventMessage = String.format("%s has joined the chat%n",
                                                 ((LoginEvent) event).getUserName());

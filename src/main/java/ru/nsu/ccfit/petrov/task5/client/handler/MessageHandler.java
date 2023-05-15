@@ -47,7 +47,7 @@ public class MessageHandler {
                             break;
                     }
                 } catch (IOException e) {
-                    listeningSupport.notifyListeners(new ClientErrorEvent("Connection error"));
+                    listeningSupport.notifyListeners(new ClientErrorEvent("Connection error", true));
                     shutdown();
                     return;
                 }
