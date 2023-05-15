@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
+import java.util.Set;
+import java.util.UUID;
 import lombok.extern.log4j.Log4j2;
 import org.apache.logging.log4j.Level;
 import ru.nsu.ccfit.petrov.task5.connection.Connection;
@@ -37,7 +39,7 @@ public class Server {
             try {
                 Socket socket = serverSocket.accept();
                 new ServerThread(socket).start();
-            } catch (Exception e) {
+            } catch (IOException e) {
                 log.error("Connection lost");
                 log.catching(Level.ERROR, e);
                 break;
@@ -49,10 +51,23 @@ public class Server {
         for (Connection connection : dataBase.getUsers().values()) {
             try {
                 connection.send(message);
-            } catch (Exception e) {
+            } catch (IOException e) {
                 log.error("Message sending error");
                 log.catching(Level.ERROR, e);
+                closeConnection(connection);
             }
+        }
+    }
+
+    private void closeConnection(Connection connection) {
+        try {
+            String userName = dataBase.getUserByConnection(connection);
+            connection.close();
+            dataBase.removeUser(connection);
+            sendAll(Message.newLogoutEvent(userName));
+        } catch (IOException e) {
+            log.error("Connection closing error");
+            log.catching(Level.ERROR, e);
         }
     }
 
@@ -81,32 +96,41 @@ public class Server {
             while (true) {
                 try {
                     Message request = connection.receive();
-                    if (request == null || request.getType() != Type.REQUEST ||
+                    if (request == null ||
+                        request.getType() != Type.REQUEST ||
                         request.getSubtype() != Subtype.LOGIN) {
                         continue;
                     }
 
                     userName = request.getUserName();
-                    if (dataBase.getUsers().containsKey(userName)) {
+                    UUID requestId = request.getId();
+
+                    if (userName == null || userName.isEmpty()) {
                         connection.send(
-                            Message.newErrorResponse(request.getId(), "Username already used"));
+                            Message.newErrorResponse(requestId, "Username format is invalid"));
+                        continue;
+                    } else if (dataBase.getUsers().containsKey(userName)) {
+                        connection.send(
+                            Message.newErrorResponse(requestId, "Username already used"));
                         continue;
                     }
 
                     dataBase.addUser(userName, connection);
-                    connection.send(Message.newSuccessResponse(request.getId()));
+                    connection.send(Message.newSuccessResponse(requestId));
+
+                    sendAll(Message.newLoginEvent(userName));
 
                     return true;
                 } catch (SocketTimeoutException e) {
-                    log.error("Receive timed out");
+                    log.error("Connection timed out");
                     log.catching(Level.ERROR, e);
-
-                    closeConnection();
-
+                    closeConnection(connection);
                     return false;
                 } catch (IOException e) {
                     log.error("Client adding error");
                     log.catching(Level.ERROR, e);
+                    closeConnection(connection);
+                    return false;
                 }
             }
         }
@@ -119,42 +143,44 @@ public class Server {
                         return;
                     }
 
-                    if (request.getSubtype() == Subtype.NEW_MESSAGE) {
-                        connection.send(Message.newSuccessResponse(request.getId()));
+                    switch (request.getSubtype()) {
+                        case NEW_MESSAGE: {
+                            UUID requestId = request.getId();
+                            String messageContent = request.getMessageContent();
 
-                        String messageContent = request.getMessageContent();
-                        sendAll(Message.newNewMessageEvent(userName, messageContent));
+                            connection.send(Message.newSuccessResponse(requestId));
+                            sendAll(Message.newNewMessageEvent(userName, messageContent));
+                            break;
+                        }
+                        case USER_LIST: {
+                            UUID requestId = request.getId();
+                            Set<String> users = dataBase.getUsers().keySet();
+
+                            connection.send(Message.newSuccessResponse(requestId, users));
+                            break;
+                        }
+                        case LOGOUT: {
+                            UUID requestId = request.getId();
+
+                            connection.send(Message.newSuccessResponse(requestId));
+                            sendAll(Message.newLogoutEvent(userName));
+
+                            dataBase.removeUser(userName);
+                            closeConnection(connection);
+                            return;
+                        }
                     }
-
-                    if (request.getSubtype() == Subtype.USER_LIST) {
-                        connection.send(Message.newSuccessResponse(request.getId(),
-                                                                   dataBase.getUsers().keySet()));
-                    }
-
-                    if (request.getSubtype() == Subtype.LOGOUT) {
-                        connection.send(Message.newSuccessResponse(request.getId()));
-
-                        sendAll(Message.newLoginEvent(userName));
-
-                        dataBase.removeUser(userName);
-                        closeConnection();
-                        return;
-                    }
+                } catch (SocketTimeoutException e) {
+                    log.error("Receive timed out");
+                    log.catching(Level.ERROR, e);
+                    closeConnection(connection);
+                    return;
                 } catch (IOException e) {
                     log.error("Message sending error");
                     log.catching(Level.ERROR, e);
-                    closeConnection();
+                    closeConnection(connection);
                     return;
                 }
-            }
-        }
-
-        private void closeConnection() {
-            try {
-                connection.close();
-            } catch (IOException e) {
-                log.error("Connection closing error");
-                log.catching(Level.ERROR, e);
             }
         }
     }
