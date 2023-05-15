@@ -29,12 +29,4 @@ public class ServerDB {
         users.remove(userName);
     }
 
-    public void removeUser(Connection connection) {
-        for (Entry<String, Connection> entry : users.entrySet()) {
-            if (entry.getValue() == connection) {
-                users.remove(entry.getKey());
-            }
-        }
-    }
-
 }
