@@ -7,7 +7,7 @@ import javax.swing.JButton;
 public class MenuButton
     extends JButton {
 
-    private static final int FONT_SIZE = 48;
+    private static final int FONT_SIZE = 40;
 
     public MenuButton(String text) {
         setText(text);
