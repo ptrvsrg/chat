@@ -3,8 +3,6 @@ package ru.nsu.ccfit.petrov.task5.message;
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
-import java.util.HashSet;
-import java.util.Set;
 import java.util.UUID;
 import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilder;
@@ -61,18 +59,37 @@ public class XmlUtils {
         }
     }
 
+    private static UUID getMessageId(Document document) {
+        Element rootTag = document.getDocumentElement();
+        String messageId = rootTag.getAttribute("id");
+        try {
+            return UUID.fromString(messageId);
+        } catch (IllegalArgumentException e) {
+            return null;
+        }
+    }
+
     private static Message documentToLoginRequestMessage(Document document) {
+        UUID id = getMessageId(document);
+        if (id == null) {
+            return null;
+        }
+
         NodeList userTags = document.getElementsByTagName("user");
         if (userTags.getLength() != 1) {
             return null;
         }
-
         String userName = userTags.item(0).getTextContent();
 
-        return Message.newLoginRequest(userName);
+        return new Message(id, Type.REQUEST, Subtype.LOGIN, null, userName, null, null);
     }
 
     private static Message documentToNewMessageRequestMessage(Document document) {
+        UUID id = getMessageId(document);
+        if (id == null) {
+            return null;
+        }
+
         NodeList messageTags = document.getElementsByTagName("message");
         if (messageTags.getLength() != 1) {
             return null;
@@ -80,15 +97,25 @@ public class XmlUtils {
 
         String messageContent = messageTags.item(0).getTextContent();
 
-        return Message.newNewMessageRequest(messageContent);
+        return new Message(id, Type.REQUEST, Subtype.NEW_MESSAGE, null, null, messageContent, null);
     }
 
     private static Message documentToUserListRequestMessage(Document document) {
-        return Message.newUserListRequest();
+        UUID id = getMessageId(document);
+        if (id == null) {
+            return null;
+        }
+
+        return new Message(id, Type.REQUEST, Subtype.USER_LIST, null, null, null, null);
     }
 
     private static Message documentToLogoutRequestMessage(Document document) {
-        return Message.newLogoutRequest();
+        UUID id = getMessageId(document);
+        if (id == null) {
+            return null;
+        }
+
+        return new Message(id, Type.REQUEST, Subtype.LOGOUT, null, null, null, null);
     }
 
     private static Message documentToResponseMessage(Document document) {
@@ -105,6 +132,11 @@ public class XmlUtils {
     }
 
     private static Message documentToSuccessResponseMessage(Document document) {
+        UUID id = getMessageId(document);
+        if (id == null) {
+            return null;
+        }
+
         NodeList requestTags = document.getElementsByTagName("request");
         NodeList usersTags = document.getElementsByTagName("users");
 
@@ -119,20 +151,25 @@ public class XmlUtils {
             return null;
         }
 
-        Set<String> users = null;
+        String[] users = null;
         if (usersTags.getLength() == 1) {
             NodeList userTags = usersTags.item(0).getChildNodes();
 
-            users = new HashSet<>();
+            users = new String[userTags.getLength()];
             for (int i = 0; i < userTags.getLength(); ++i) {
-                users.add(userTags.item(i).getTextContent());
+                users[i] = userTags.item(i).getTextContent();
             }
         }
 
-        return Message.newSuccessResponse(requestId, users);
+        return new Message(id, Type.RESPONSE, Subtype.SUCCESS, requestId, null, null, users);
     }
 
     private static Message documentToErrorResponseMessage(Document document) {
+        UUID id = getMessageId(document);
+        if (id == null) {
+            return null;
+        }
+
         NodeList requestTags = document.getElementsByTagName("request");
         NodeList reasonTags = document.getElementsByTagName("reason");
         if (requestTags.getLength() != 1 || reasonTags.getLength() != 1) {
@@ -147,7 +184,7 @@ public class XmlUtils {
             return null;
         }
 
-        return Message.newErrorResponse(requestId, reason);
+        return new Message(id, Type.RESPONSE, Subtype.ERROR, requestId, null, reason, null);
     }
 
     private static Message documentToEventMessage(Document document) {
@@ -166,6 +203,11 @@ public class XmlUtils {
     }
 
     private static Message documentToLoginEventMessage(Document document) {
+        UUID id = getMessageId(document);
+        if (id == null) {
+            return null;
+        }
+
         NodeList userTags = document.getElementsByTagName("user");
         if (userTags.getLength() != 1) {
             return null;
@@ -173,10 +215,15 @@ public class XmlUtils {
 
         String userName = userTags.item(0).getTextContent();
 
-        return Message.newLoginEvent(userName);
+        return new Message(id, Type.EVENT, Subtype.LOGIN, null, userName, null, null);
     }
 
     private static Message documentToNewMessageEventMessage(Document document) {
+        UUID id = getMessageId(document);
+        if (id == null) {
+            return null;
+        }
+
         NodeList userTags = document.getElementsByTagName("user");
         NodeList messageTags = document.getElementsByTagName("message");
         if (userTags.getLength() != 1 || messageTags.getLength() != 1) {
@@ -186,10 +233,15 @@ public class XmlUtils {
         String userName = userTags.item(0).getTextContent();
         String messageContent = messageTags.item(0).getTextContent();
 
-        return Message.newNewMessageEvent(userName, messageContent);
+        return new Message(id, Type.EVENT, Subtype.NEW_MESSAGE, null, userName, messageContent, null);
     }
 
     private static Message documentToLogoutEventMessage(Document document) {
+        UUID id = getMessageId(document);
+        if (id == null) {
+            return null;
+        }
+
         NodeList userTags = document.getElementsByTagName("user");
         if (userTags.getLength() != 1) {
             return null;
@@ -197,7 +249,7 @@ public class XmlUtils {
 
         String userName = userTags.item(0).getTextContent();
 
-        return Message.newLogoutEvent(userName);
+        return new Message(id, Type.EVENT, Subtype.LOGOUT, null, userName, null, null);
     }
 
     public static Document messageToDocument(Message message)
@@ -295,7 +347,7 @@ public class XmlUtils {
 
     private static Document successResponseMessageToDocument(Message message, Document document) {
         Element rootTag = document.getDocumentElement();
-        rootTag.setAttribute("name", "error");
+        rootTag.setAttribute("name", "success");
 
         if (message.getUsers() != null) {
             Element usersTag = document.createElement("users");
