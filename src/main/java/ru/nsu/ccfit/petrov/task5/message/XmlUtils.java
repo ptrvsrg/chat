@@ -25,6 +25,10 @@ import ru.nsu.ccfit.petrov.task5.message.Message.Type;
 
 public class XmlUtils {
 
+    private XmlUtils() {
+        throw new UnsupportedOperationException("Utility class");
+    }
+
     public static Message documentToMessage(Document document) {
         Element rootTag = document.getDocumentElement();
 
