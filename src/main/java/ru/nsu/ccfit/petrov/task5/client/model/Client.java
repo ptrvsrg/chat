@@ -1,12 +1,12 @@
-package ru.nsu.ccfit.petrov.task5.client;
+package ru.nsu.ccfit.petrov.task5.client.model;
 
 import java.io.IOException;
 import java.net.Socket;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.ExecutionException;
-import ru.nsu.ccfit.petrov.task5.client.config.ClientConfig;
-import ru.nsu.ccfit.petrov.task5.client.handler.MessageHandler;
+import ru.nsu.ccfit.petrov.task5.client.model.config.ClientConfig;
+import ru.nsu.ccfit.petrov.task5.client.model.handler.MessageHandler;
 import ru.nsu.ccfit.petrov.task5.connection.Connection;
 import ru.nsu.ccfit.petrov.task5.client.listener.Listener;
 import ru.nsu.ccfit.petrov.task5.client.listener.ListeningSupport;

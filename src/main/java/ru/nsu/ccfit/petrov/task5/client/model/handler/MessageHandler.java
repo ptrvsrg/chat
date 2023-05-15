@@ -1,4 +1,4 @@
-package ru.nsu.ccfit.petrov.task5.client.handler;
+package ru.nsu.ccfit.petrov.task5.client.model.handler;
 
 import java.io.IOException;
 import java.util.Map;

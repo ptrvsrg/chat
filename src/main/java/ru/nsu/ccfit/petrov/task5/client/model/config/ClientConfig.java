@@ -1,4 +1,4 @@
-package ru.nsu.ccfit.petrov.task5.client.config;
+package ru.nsu.ccfit.petrov.task5.client.model.config;
 
 import java.io.IOException;
 import java.io.InputStream;

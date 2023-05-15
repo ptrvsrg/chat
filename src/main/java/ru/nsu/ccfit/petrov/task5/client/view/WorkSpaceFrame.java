@@ -17,7 +17,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 import javax.swing.border.EmptyBorder;
 import lombok.RequiredArgsConstructor;
-import ru.nsu.ccfit.petrov.task5.client.Client;
+import ru.nsu.ccfit.petrov.task5.client.model.Client;
 import ru.nsu.ccfit.petrov.task5.client.view.components.UsersDialog;
 import ru.nsu.ccfit.petrov.task5.client.listener.Listener;
 import ru.nsu.ccfit.petrov.task5.client.listener.event.ClientErrorEvent;
