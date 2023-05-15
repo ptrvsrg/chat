@@ -85,9 +85,7 @@ public class WorkSpaceFrame
         JButton usersButton = new JButton(USERS_BUTTON_TEXT);
         usersButton.addActionListener(e -> {
             Set<String> users = client.getUsers();
-            SwingUtilities.invokeLater(() -> {
-                new UsersDialog(frame, users);
-            });
+            SwingUtilities.invokeLater(() -> new UsersDialog(frame, users));
         });
 
         JPanel buttonGroup = new JPanel(new FlowLayout(FlowLayout.RIGHT));
