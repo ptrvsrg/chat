@@ -41,6 +41,8 @@ public class Connection
             case XML_FILE:
                 sendXmlFile(message);
                 break;
+            default:
+                throw new IOException("Invalid message format");
         }
     }
 
@@ -56,7 +58,7 @@ public class Connection
             Document document = XmlUtils.messageToDocument(message);
             xmlMessage = XmlUtils.documentToString(document);
         } catch (ParserConfigurationException | TransformerException e) {
-            return;
+            throw new IOException("Invalid message format : " + e);
         }
 
         out.writeObject(xmlMessage);
@@ -71,18 +73,17 @@ public class Connection
                 return receiveJavaObject();
             case XML_FILE:
                 return receiveXmlFile();
+            default:
+                throw new IOException("Invalid message format");
         }
-
-        return null;
     }
 
     private Message receiveJavaObject()
         throws IOException {
         try {
-            Object o = in.readObject();
-            return (Message) o;
+            return (Message) in.readObject();
         } catch (ClassNotFoundException | ClassCastException e) {
-            return null;
+            throw new IOException("Invalid message format : " + e);
         }
     }
 
@@ -92,13 +93,13 @@ public class Connection
         try {
             xmlMessage = (String) in.readObject();
         } catch (ClassNotFoundException | ClassCastException e) {
-            return null;
+            throw new IOException("Invalid message format : " + e);
         }
 
         try {
             return XmlUtils.documentToMessage(XmlUtils.stringToDocument(xmlMessage));
         } catch (ParserConfigurationException | IOException | SAXException e) {
-            return null;
+            throw new IOException("Invalid message format : " + e);
         }
     }
 
