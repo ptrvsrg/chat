@@ -203,19 +203,16 @@ public class XmlUtils {
         DocumentBuilder builder = factory.newDocumentBuilder();
         Document document = builder.newDocument();
 
-        if (message.getType() == Type.REQUEST) {
-            return requestMessageToDocument(message, document);
+        switch (message.getType()) {
+            case REQUEST:
+                return requestMessageToDocument(message, document);
+            case RESPONSE:
+                return responseMessageToDocument(message, document);
+            case EVENT:
+                return eventMessageToDocument(message, document);
+            default:
+                return null;
         }
-
-        if (message.getType() == Type.RESPONSE) {
-            return responseMessageToDocument(message, document);
-        }
-
-        if (message.getType() == Type.EVENT) {
-            return eventMessageToDocument(message, document);
-        }
-
-        return null;
     }
 
     private static Document requestMessageToDocument(Message message, Document document) {
@@ -223,23 +220,18 @@ public class XmlUtils {
         rootTag.setAttribute("id", message.getId().toString());
         document.appendChild(rootTag);
 
-        if (message.getSubtype() == Subtype.LOGIN) {
-            return loginRequestMessageToDocument(message, document);
+        switch (message.getSubtype()) {
+            case LOGIN:
+                return loginRequestMessageToDocument(message, document);
+            case NEW_MESSAGE:
+                return newMessageRequestMessageToDocument(message, document);
+            case USER_LIST:
+                return userListRequestMessageToDocument(message, document);
+            case LOGOUT:
+                return logoutRequestMessageToDocument(message, document);
+            default:
+                return null;
         }
-
-        if (message.getSubtype() == Subtype.NEW_MESSAGE) {
-            return newMessageRequestMessageToDocument(message, document);
-        }
-
-        if (message.getSubtype() == Subtype.USER_LIST) {
-            return userListRequestMessageToDocument(message, document);
-        }
-
-        if (message.getSubtype() == Subtype.LOGOUT) {
-            return logoutRequestMessageToDocument(message, document);
-        }
-
-        return null;
     }
 
     private static Document loginRequestMessageToDocument(Message message, Document document) {
@@ -287,15 +279,14 @@ public class XmlUtils {
         requestTag.setTextContent(message.getRequestId().toString());
         rootTag.appendChild(requestTag);
 
-        if (message.getSubtype() == Subtype.SUCCESS) {
-            return successResponseMessageToDocument(message, document);
+        switch (message.getSubtype()) {
+            case SUCCESS:
+                return successResponseMessageToDocument(message, document);
+            case ERROR:
+                return errorResponseMessageToDocument(message, document);
+            default:
+                return null;
         }
-
-        if (message.getSubtype() == Subtype.ERROR) {
-            return errorResponseMessageToDocument(message, document);
-        }
-
-        return null;
     }
 
     private static Document successResponseMessageToDocument(Message message, Document document) {
@@ -332,19 +323,16 @@ public class XmlUtils {
         rootTag.setAttribute("id", message.getId().toString());
         document.appendChild(rootTag);
 
-        if (message.getSubtype() == Subtype.LOGIN) {
-            return loginEventMessageToDocument(message, document);
+        switch (message.getSubtype()) {
+            case LOGIN:
+                return loginEventMessageToDocument(message, document);
+            case NEW_MESSAGE:
+                return newMessageEventMessageToDocument(message, document);
+            case LOGOUT:
+                return logoutEventMessageToDocument(message, document);
+            default:
+                return null;
         }
-
-        if (message.getSubtype() == Subtype.NEW_MESSAGE) {
-            return newMessageEventMessageToDocument(message, document);
-        }
-
-        if (message.getSubtype() == Subtype.LOGOUT) {
-            return logoutEventMessageToDocument(message, document);
-        }
-
-        return null;
     }
 
     private static Document loginEventMessageToDocument(Message message, Document document) {
