@@ -112,10 +112,11 @@ public class Connection
     }
 
     @Override
-    public void close()
-        throws IOException {
-        clientSocket.close();
-        in.close();
-        out.close();
+    public void close() {
+        try {
+            clientSocket.close();
+            in.close();
+            out.close();
+        } catch (IOException ignored) {}
     }
 }
