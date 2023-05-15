@@ -1,33 +1,29 @@
 package ru.nsu.ccfit.petrov.task5.listener;
 
-import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
+import lombok.Getter;
 import ru.nsu.ccfit.petrov.task5.listener.event.Event;
 
+@Getter
 public class ListeningSupport {
 
-    private ArrayList<Listener> listeners = null;
+    private final Set<Listener> listeners = new HashSet<>();
 
     public void addListener(Listener listener) {
-        if (listeners == null) {
-            listeners = new ArrayList<>();
-        }
-
         listeners.add(listener);
     }
 
-    public void removeListener(Listener listener) {
-        if (listeners == null) {
-            return;
-        }
+    public void addListeners(Collection<? extends Listener> listeners) {
+        this.listeners.addAll(listeners);
+    }
 
+    public void removeListener(Listener listener) {
         listeners.remove(listener);
     }
 
     public void notifyListeners(Event event) {
-        if (listeners == null) {
-            return;
-        }
-
         for (Listener listener : listeners) {
             listener.processEvent(event);
         }
