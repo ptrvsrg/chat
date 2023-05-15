@@ -32,7 +32,7 @@ public class Message
     private final UUID requestId;
     private final String userName;
     private final String messageContent;
-    private final Set<String> users;
+    private final String[] users;
 
     public static Message newLoginRequest(String userName) {
         return new Message(Type.REQUEST, Subtype.LOGIN, null, userName, null, null);
@@ -55,7 +55,8 @@ public class Message
     }
 
     public static Message newSuccessResponse(UUID requestId, Set<String> users) {
-        return new Message(Type.RESPONSE, Subtype.SUCCESS, requestId, null, null, users);
+        return new Message(Type.RESPONSE, Subtype.SUCCESS, requestId, null, null,
+                           users.toArray(String[]::new));
     }
 
     public static Message newErrorResponse(UUID requestId, String reason) {
