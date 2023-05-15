@@ -14,7 +14,7 @@ public class UsersDialog
     extends JDialog {
 
     private static final String TITLE = "Users";
-    private static final int FONT_SIZE = 20;
+    private static final int FONT_SIZE = 16;
     private static final int BORDER_INSET = 10;
     private static final int WIDTH = 400;
     private static final int HEIGHT = 500;
