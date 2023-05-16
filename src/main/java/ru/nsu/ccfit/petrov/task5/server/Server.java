@@ -18,9 +18,10 @@ public class Server {
     public void start() {
         try {
             serverSocket = new ServerSocket(ServerConfig.getPort());
+            log.info("Server started");
         } catch (IOException e) {
-            log.info("Server didn't start");
-            log.catching(Level.INFO, e);
+            log.error("Server didn't start");
+            log.catching(Level.ERROR, e);
             return;
         }
 
@@ -31,10 +32,12 @@ public class Server {
         while (true) {
             try {
                 Socket clientSocket = serverSocket.accept();
-                clientSocket.setSoTimeout(ServerConfig.getTimeout());
+                log.info(String.format("Client %s accepted", clientSocket));
 
+                clientSocket.setSoTimeout(ServerConfig.getTimeout());
                 Connection connection = new Connection(clientSocket);
                 clientManager.addClient(connection);
+                log.info(String.format("Client %s added", clientSocket));
             } catch (IOException e) {
                 log.info("Connection lost");
                 log.catching(Level.INFO, e);
