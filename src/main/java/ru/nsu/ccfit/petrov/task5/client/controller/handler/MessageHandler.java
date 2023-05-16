@@ -1,4 +1,4 @@
-package ru.nsu.ccfit.petrov.task5.client.model.handler;
+package ru.nsu.ccfit.petrov.task5.client.controller.handler;
 
 import java.io.IOException;
 import java.util.Map;
@@ -18,11 +18,11 @@ import ru.nsu.ccfit.petrov.task5.message.Message;
 
 public class MessageHandler {
 
-    private static final int SENDER_COUNT = 1;
-    private static final int RECEIVER_COUNT = 1;
+    private static final int SENDER_COUNT = 3;
+    private static final int RECEIVER_COUNT = 3;
     private final Map<UUID, CompletableFuture<Message>> requests = new ConcurrentHashMap<>();
-    private final ExecutorService sender = Executors.newFixedThreadPool(SENDER_COUNT);
-    private final ExecutorService receiver = Executors.newFixedThreadPool(RECEIVER_COUNT);
+    private final ExecutorService senders = Executors.newFixedThreadPool(SENDER_COUNT);
+    private final ExecutorService receivers = Executors.newFixedThreadPool(RECEIVER_COUNT);
     private final Connection connection;
     private final ListeningSupport listeningSupport;
 
@@ -35,7 +35,7 @@ public class MessageHandler {
 
     private void startReceiver(Connection connection) {
         CompletableFuture.runAsync(() -> {
-            while (!receiver.isShutdown()) {
+            while (!receivers.isShutdown()) {
                 try {
                     Message message = connection.receive();
                     switch (message.getType()) {
@@ -47,12 +47,11 @@ public class MessageHandler {
                             break;
                     }
                 } catch (IOException e) {
-                    listeningSupport.notifyListeners(new ClientErrorEvent("Connection error", true));
-                    shutdown();
+                    closeClient("Connection error", true);
                     return;
                 }
             }
-        }, receiver);
+        }, receivers);
     }
 
     private void processResponse(Message response) {
@@ -93,14 +92,21 @@ public class MessageHandler {
             } catch (IOException e) {
                 futureResponse.completeExceptionally(e);
             }
-        }, sender);
+        }, senders);
 
         return futureResponse.get();
     }
 
     public void shutdown() {
-        sender.shutdown();
-        receiver.shutdown();
+        senders.shutdown();
+        receivers.shutdown();
         connection.close();
+    }
+
+    private void closeClient(String reason, boolean terminated) {
+        listeningSupport.notifyListeners(new ClientErrorEvent(reason, terminated));
+        if (terminated) {
+            shutdown();
+        }
     }
 }
