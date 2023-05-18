@@ -1,4 +1,4 @@
-# Задание 5. Сетевое программирование, сериализация, XML
+# Задание 5. Сетевое программирование, сериализация, XML-файлы
 
 ## Описание
 Напишите программу для общения через `Internet`. 
@@ -12,172 +12,170 @@
 + Можно посмотреть список участников чата.
 + Можно послать сообщение в чат (всем участникам).
 + Клиент показывает все сообщения, которые отправили в чат с момента подключения. 
-Также показывается некоторое число сообщений, отправленных до; 
-список сообщений обновляется online.
+Список сообщений обновляется online.
 + Клиент отображает некоторые события: 
   + Подключение нового человека в чат;
-  + Уход человека из чата;
-  + Отключения клиента от чата (по таймауту);
-+ Сервер должен логгировать все события, которые происходят на его стороне.
-+ Чат работает через TCP/IP протокол.
+  + Уход человека из чата и отключения клиента от чата по таймауту;
++ Сервер должен логировать все события, которые происходят на его стороне.
++ Чат работает через `TCP/IP` протокол.
 
-## Версии клиента и сервера 
+## Форматы сообщений клиента и сервера 
 
 ### Java-объекты
 
 Используется сериализация/десериализация Java-объектов для посылки/приема сообщений.
 
-### XML сообщения 
+### XML-файлы 
 
 Используются XML-сообщения.
 Клиент и сервер должны поддерживать стандартный протокол (Это необходимо для возможности общение между клиентами, созданными разными учениками).
 
 #### Описание протокола
 
-Вначале XML сообщения хранятся 4 байта с длиной сообщения. Т.е. сначала
-читаются первые 4 байта, узнается длина оставшегося сообщения (в байтах).
-Затем считывается само сообщение и обрабатывается как XML документ.
-
 Протокол взаимодействия для XML-сообщений (расширения приветствуются):
 
 1. Регистрация
 
-   + Client message
+   + Client request
 
    ```xml
-      <command name="login">
-         <name>USER_NAME</name>
-      </command>
+      <request id="MESSAGE_ID" name="login">
+         <user>USER_NAME</user>
+      </request>
    ```
 
-   + Server error answer
+   + Server error response
 
    ```xml
-      <error>
-        <message>REASON</message>
-      </error>
+      <response id="MESSAGE_ID" name="error">
+         <request>REQUEST_ID</request>
+         <message>REASON</message>
+      </response>
    ```
 
-   + Server success answer
+   + Server success response
 
    ```xml
-      <success>
-        <session>UNIQUE_SESSION_ID</session>
-      </success>
+      <response id="MESSAGE_ID" name="success">
+         <request>REQUEST_ID</request>
+      </response>
    ```
 
 2. Запрос списка пользователей чата
 
-   + Client message
+   + Client request
 
    ```xml
-      <command name="list">
-        <session>UNIQUE_SESSION_ID</session>
-      </command>
+      <request id="MESSAGE_ID" name="user_list">
+      </request>
    ```
 
-   + Server error answer
+   + Server error response
 
    ```xml
-      <error>
+      <response id="MESSAGE_ID" name="error">
+         <request>REQUEST_ID</request>
          <message>REASON</message>
-      </error>
+      </response>
    ```
 
-   + Server success answer
+   + Server success response
 
    ```xml
-        <success>
-           <listusers>
-              <user>
-                 <name>USER_1</name>
-              </user>
-              …
-              <user>
-                 <name>USER_N</name>
-              </user>
-           </listusers>
-        </success>
+        <response id="MESSAGE_ID" name="success">
+          <request>REQUEST_ID</request>
+          <users>
+            <user>
+              <name>USER_1</name>
+            </user>
+            …
+            <user>
+              <name>USER_N</name>
+            </user>
+          </users>
+        </response>
      ```
 
-3. Сообщение от клиента серверу
+3. Отправка сообщения
 
-   + Client message
+   + Client request
 
    ```xml
-     <command name="message">
-        <message>MESSAGE</message>
-        <session>UNIQUE_SESSION_ID</session>
-     </command>
+     <request id="MESSAGE_ID" name="new_message">
+         <message>MESSAGE</message>
+     </request>
      ```
 
-   + Server error answer
+   + Server error response
    
    ```xml
-      <error>
-        <message>REASON</message>
-      </error>
+      <response id="MESSAGE_ID" name="error">
+         <request>REQUEST_ID</request>
+         <message>REASON</message>
+      </response>
    ```
 
-   + Server success answer
+   + Server success response
  
    ```xml
-       <success>
-       </success>
+       <response id="MESSAGE_ID" name="success">
+         <request>REQUEST_ID</request>
+       </response>
     ```
-   
-4. Сообщение от сервера клиенту
 
-   + Server message
+4. Отключение
 
-   ```xml
-      <event name="message">
-         <message>MESSAGE</message>
-         <name>CHAT_NAME_FROM</name>
-      </event>
-   ```
-
-5. Отключение
-
-   + Client message
+   + Client request
    
    ```xml
-      <command name="logout">
-         <session>UNIQUE_SESSION_ID</session>
-      </command>
+      <request id="MESSAGE_ID" name="logout">
+      </request>
    ```
    
-   + Server error answer
+   + Server error response
    
    ```xml
-      <error>
+      <response id="MESSAGE_ID" name="error">
+         <request_id>REQUEST_ID</request_id>
          <message>REASON</message>
-      </error>
+      </response>
    ```
    
-   + Server success answer
+   + Server success response
    
    ```xml
-      <success>
-      </success>
+       <response id="MESSAGE_ID" name="success">
+         <request_id>REQUEST_ID</request_id>
+       </response>
    ```
-   
-6. Новый клиент
-   
-   + Server message
-   
+
+5. Новый пользователь
+
+   + Server event
+
    ```xml
-      <event name="userlogin">
+      <event id="MESSAGE_ID" name="login">
          <name>USER_NAME</name>
       </event>
    ```
 
-7. Клиент отключился
+6. Отправка сообщения другим пользователем
 
-   + Server message
-   
+   + Server event
+
    ```xml
-      <event name="userlogout">
+      <event id="MESSAGE_ID" name="new_message">
+         <name>USER_NAME</name>
+         <message>MESSAGE</message>
+      </event>
+   ```
+
+7. Другой пользователь отключился
+
+   + Server event
+
+   ```xml
+      <event id="MESSAGE_ID" name="logout">
          <name>USER_NAME</name>
       </event>
    ```
@@ -185,7 +183,7 @@
 ## Рекомендации
 
 + Сервер слушает порт с помощью класса `java.net.ServerSocket`
-+ Клиент подсоединяется к серверу с помощью класса `java.net.Socket`
++ Клиент подключается к серверу с помощью класса `java.net.Socket`
 + XML-сообщение читать с помощью `DOM parser`:
    ```
       DocumentBuilderFactory.newInstance().newDocumentBuilder().parse()
