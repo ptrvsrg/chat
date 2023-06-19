@@ -34,16 +34,16 @@ public class Client {
     }
 
     public boolean login(String userName) {
-        Message response;
+        DTO response;
         try {
-            response = messageHandler.sendRequest(Message.newLoginRequest(userName));
+            response = messageHandler.sendRequest(DTO.newLoginRequest(userName));
         } catch (ExecutionException | InterruptedException e) {
             closeClient("Connection error", true);
             return false;
         }
 
         if (response.getSubtype() == Subtype.ERROR) {
-            String reason = response.getMessageContent();
+            String reason = response.getMessage();
             closeClient(reason, false);
             return false;
         }
@@ -52,16 +52,16 @@ public class Client {
     }
 
     public Set<String> getUsers() {
-        Message response;
+        DTO response;
         try {
-            response = messageHandler.sendRequest(Message.newUserListRequest());
+            response = messageHandler.sendRequest(DTO.newUserListRequest());
         } catch (ExecutionException | InterruptedException e) {
             closeClient("Connection error", true);
             return new HashSet<>();
         }
 
         if (response.getSubtype() == Subtype.ERROR) {
-            String reason = response.getMessageContent();
+            String reason = response.getMessage();
             closeClient(reason, false);
             return new HashSet<>();
         }
@@ -70,31 +70,31 @@ public class Client {
     }
 
     public void sendUserMessage(String messageText) {
-        Message response;
+        DTO response;
         try {
-            response = messageHandler.sendRequest(Message.newNewMessageRequest(messageText));
+            response = messageHandler.sendRequest(DTO.newNewMessageRequest(messageText));
         } catch (ExecutionException | InterruptedException e) {
             closeClient("Connection error", true);
             return;
         }
 
         if (response.getSubtype() == Subtype.ERROR) {
-            String reason = response.getMessageContent();
+            String reason = response.getMessage();
             closeClient(reason, false);
         }
     }
 
     public void logout() {
-        Message response;
+        DTO response;
         try {
-            response = messageHandler.sendRequest(Message.newLogoutRequest());
+            response = messageHandler.sendRequest(DTO.newLogoutRequest());
         } catch (ExecutionException | InterruptedException e) {
             closeClient("Connection error", true);
             return;
         }
 
         if (response.getSubtype() == Subtype.ERROR) {
-            String reason = response.getMessageContent();
+            String reason = response.getMessage();
             closeClient(reason, false);
         } else {
             messageHandler.shutdown();

@@ -5,7 +5,7 @@ import java.io.InputStream;
 import java.util.Properties;
 import lombok.extern.log4j.Log4j2;
 import org.apache.logging.log4j.Level;
-import ru.nsu.ccfit.petrov.task5.message.MessageFormat;
+import ru.nsu.ccfit.petrov.task5.dto.DTOFormat;
 
 @Log4j2
 public class ClientConfig {
@@ -38,14 +38,14 @@ public class ClientConfig {
         return Integer.parseInt(properties.getProperty("connection.timeout"));
     }
 
-    public static MessageFormat getMessageFormat() {
+    public static DTOFormat getDTOFormat() {
         String messageFormat = properties.getProperty("message.format");
 
         switch (messageFormat) {
             case "java_object":
-                return MessageFormat.JAVA_OBJECT;
+                return DTOFormat.JAVA_OBJECT;
             case "xml_file":
-                return MessageFormat.XML_FILE;
+                return DTOFormat.XML_FILE;
             default:
                 throw new IllegalStateException("Unsupported message format");
         }

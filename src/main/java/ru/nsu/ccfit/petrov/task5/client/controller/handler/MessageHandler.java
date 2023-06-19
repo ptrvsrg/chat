@@ -14,13 +14,13 @@ import ru.nsu.ccfit.petrov.task5.client.listener.event.ClientErrorEvent;
 import ru.nsu.ccfit.petrov.task5.client.listener.event.LoginEvent;
 import ru.nsu.ccfit.petrov.task5.client.listener.event.LogoutEvent;
 import ru.nsu.ccfit.petrov.task5.client.listener.event.NewMessageEvent;
-import ru.nsu.ccfit.petrov.task5.message.Message;
+import ru.nsu.ccfit.petrov.task5.dto.DTO;
 
 public class MessageHandler {
 
     private static final int SENDER_COUNT = 3;
     private static final int RECEIVER_COUNT = 3;
-    private final Map<UUID, CompletableFuture<Message>> requests = new ConcurrentHashMap<>();
+    private final Map<UUID, CompletableFuture<DTO>> requests = new ConcurrentHashMap<>();
     private final ExecutorService senders = Executors.newFixedThreadPool(SENDER_COUNT);
     private final ExecutorService receivers = Executors.newFixedThreadPool(RECEIVER_COUNT);
     private final Connection connection;
@@ -37,13 +37,13 @@ public class MessageHandler {
         CompletableFuture.runAsync(() -> {
             while (!receivers.isShutdown()) {
                 try {
-                    Message message = connection.receive();
-                    switch (message.getType()) {
+                    DTO dto = connection.receive();
+                    switch (dto.getType()) {
                         case RESPONSE:
-                            processResponse(message);
+                            processResponse(dto);
                             break;
                         case EVENT:
-                            processEvent(message);
+                            processEvent(dto);
                             break;
                     }
                 } catch (IOException e) {
@@ -54,36 +54,36 @@ public class MessageHandler {
         }, receivers);
     }
 
-    private void processResponse(Message response) {
+    private void processResponse(DTO response) {
         UUID requestId = response.getRequestId();
-        CompletableFuture<Message> futureResponse = requests.remove(requestId);
+        CompletableFuture<DTO> futureResponse = requests.remove(requestId);
         futureResponse.complete(response);
     }
 
-    private void processEvent(Message event) {
+    private void processEvent(DTO event) {
         switch (event.getSubtype()) {
             case LOGIN: {
-                String userName = event.getUserName();
+                String userName = event.getUsername();
                 listeningSupport.notifyListeners(new LoginEvent(userName));
                 break;
             }
             case NEW_MESSAGE: {
-                String userName = event.getUserName();
-                String messageContent = event.getMessageContent();
+                String userName = event.getUsername();
+                String messageContent = event.getMessage();
                 listeningSupport.notifyListeners(new NewMessageEvent(userName, messageContent));
                 break;
             }
             case LOGOUT: {
-                String userName = event.getUserName();
+                String userName = event.getUsername();
                 listeningSupport.notifyListeners(new LogoutEvent(userName));
                 break;
             }
         }
     }
 
-    public Message sendRequest(Message request)
+    public DTO sendRequest(DTO request)
         throws ExecutionException, InterruptedException {
-        CompletableFuture<Message> futureResponse = new CompletableFuture<>();
+        CompletableFuture<DTO> futureResponse = new CompletableFuture<>();
         requests.put(request.getId(), futureResponse);
 
         CompletableFuture.runAsync(() -> {

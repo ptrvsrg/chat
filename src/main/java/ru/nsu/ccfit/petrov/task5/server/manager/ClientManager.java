@@ -9,9 +9,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.apache.logging.log4j.Level;
 import ru.nsu.ccfit.petrov.task5.connection.Connection;
-import ru.nsu.ccfit.petrov.task5.message.Message;
-import ru.nsu.ccfit.petrov.task5.message.Message.Subtype;
-import ru.nsu.ccfit.petrov.task5.message.Message.Type;
+import ru.nsu.ccfit.petrov.task5.dto.DTO;
+import ru.nsu.ccfit.petrov.task5.dto.DTO.Subtype;
+import ru.nsu.ccfit.petrov.task5.dto.DTO.Type;
 import ru.nsu.ccfit.petrov.task5.server.database.ServerDB;
 
 @Log4j2
@@ -26,10 +26,10 @@ public class ClientManager {
         clientHandlers.execute(new RegisterTask(connection));
     }
 
-    private void sendEvent(Message message) {
+    private void sendEvent(DTO dto) {
         for (Connection connection : dataBase.getUsers().values()) {
             try {
-                connection.send(message);
+                connection.send(dto);
             } catch (IOException e) {
                 log.info("Message didn't send");
                 log.catching(Level.INFO, e);
@@ -44,7 +44,7 @@ public class ClientManager {
         String userName = dataBase.getUserByConnection(connection);
         if (userName != null) {
             dataBase.removeUser(userName);
-            sendEvent(Message.newLogoutEvent(userName));
+            sendEvent(DTO.newLogoutEvent(userName));
         }
     }
 
@@ -58,30 +58,30 @@ public class ClientManager {
         public void run() {
             while (true) {
                 try {
-                    Message request = connection.receive();
+                    DTO request = connection.receive();
                     if (request == null ||
                         request.getType() != Type.REQUEST ||
                         request.getSubtype() != Subtype.LOGIN) {
                         continue;
                     }
 
-                    String userName = request.getUserName();
+                    String userName = request.getUsername();
                     UUID requestId = request.getId();
 
                     if (userName == null || userName.isEmpty()) {
                         connection.send(
-                            Message.newErrorResponse(requestId, "Username format is invalid"));
+                            DTO.newErrorResponse(requestId, "Username format is invalid"));
                         continue;
                     } else if (dataBase.getUsers().containsKey(userName)) {
                         connection.send(
-                            Message.newErrorResponse(requestId, "Username already used"));
+                            DTO.newErrorResponse(requestId, "Username already used"));
                         continue;
                     }
 
                     dataBase.addUser(userName, connection);
-                    connection.send(Message.newSuccessResponse(requestId));
+                    connection.send(DTO.newSuccessResponse(requestId));
 
-                    sendEvent(Message.newLoginEvent(userName));
+                    sendEvent(DTO.newLoginEvent(userName));
 
                     break;
                 } catch (IOException e) {
@@ -110,7 +110,7 @@ public class ClientManager {
             }
 
             try {
-                Message request = connection.receive();
+                DTO request = connection.receive();
                 if (request.getType() != Type.REQUEST) {
                     return;
                 }
@@ -118,24 +118,24 @@ public class ClientManager {
                 switch (request.getSubtype()) {
                     case NEW_MESSAGE: {
                         UUID requestId = request.getId();
-                        String messageContent = request.getMessageContent();
+                        String messageContent = request.getMessage();
 
-                        connection.send(Message.newSuccessResponse(requestId));
-                        sendEvent(Message.newNewMessageEvent(userName, messageContent));
+                        connection.send(DTO.newSuccessResponse(requestId));
+                        sendEvent(DTO.newNewMessageEvent(userName, messageContent));
                         break;
                     }
                     case USER_LIST: {
                         UUID requestId = request.getId();
                         Set<String> users = dataBase.getUsers().keySet();
 
-                        connection.send(Message.newSuccessResponse(requestId, users));
+                        connection.send(DTO.newSuccessResponse(requestId, users));
                         break;
                     }
                     case LOGOUT: {
                         UUID requestId = request.getId();
 
-                        connection.send(Message.newSuccessResponse(requestId));
-                        sendEvent(Message.newLogoutEvent(userName));
+                        connection.send(DTO.newSuccessResponse(requestId));
+                        sendEvent(DTO.newLogoutEvent(userName));
 
                         dataBase.removeUser(userName);
                         closeConnection(connection);
