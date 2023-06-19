@@ -7,12 +7,12 @@ import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import ru.nsu.ccfit.petrov.task5.client.controller.config.ClientConfig;
 import ru.nsu.ccfit.petrov.task5.client.controller.handler.MessageHandler;
-import ru.nsu.ccfit.petrov.task5.connection.Connection;
 import ru.nsu.ccfit.petrov.task5.client.listener.Listener;
 import ru.nsu.ccfit.petrov.task5.client.listener.ListeningSupport;
 import ru.nsu.ccfit.petrov.task5.client.listener.event.ClientErrorEvent;
-import ru.nsu.ccfit.petrov.task5.message.Message;
-import ru.nsu.ccfit.petrov.task5.message.Message.Subtype;
+import ru.nsu.ccfit.petrov.task5.connection.ConnectionFactory;
+import ru.nsu.ccfit.petrov.task5.dto.DTO;
+import ru.nsu.ccfit.petrov.task5.dto.DTO.Subtype;
 
 public class Client {
 
@@ -27,7 +27,7 @@ public class Client {
         try {
             Socket clientSocket = new Socket(ClientConfig.getHostName(), ClientConfig.getPort());
             clientSocket.setSoTimeout(ClientConfig.getTimeout());
-            messageHandler = new MessageHandler(new Connection(clientSocket), listeningSupport);
+            messageHandler = new MessageHandler(ConnectionFactory.newConnection(clientSocket), listeningSupport);
         } catch (IOException e) {
             closeClient("Server is not available", true);
         }
