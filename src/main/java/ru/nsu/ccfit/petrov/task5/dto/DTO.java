@@ -71,9 +71,8 @@ public class DTO
         return new DTO(Type.RESPONSE, Subtype.SUCCESS, requestId, null, null, null);
     }
 
-    public static DTO newSuccessResponse(UUID requestId, Set<String> users) {
-        return new DTO(Type.RESPONSE, Subtype.SUCCESS, requestId, null, null,
-                       users.toArray(String[]::new));
+    public static DTO newSuccessResponse(UUID requestId, String[] users) {
+        return new DTO(Type.RESPONSE, Subtype.SUCCESS, requestId, null, null, users);
     }
 
     public static DTO newErrorResponse(UUID requestId, String reason) {
