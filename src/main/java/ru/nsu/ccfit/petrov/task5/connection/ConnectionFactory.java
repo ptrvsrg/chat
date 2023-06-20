@@ -2,7 +2,7 @@ package ru.nsu.ccfit.petrov.task5.connection;
 
 import java.io.IOException;
 import java.net.Socket;
-import ru.nsu.ccfit.petrov.task5.server.config.ServerConfig;
+import ru.nsu.ccfit.petrov.task5.dto.DTOFormat;
 
 public class ConnectionFactory {
 
@@ -10,9 +10,9 @@ public class ConnectionFactory {
         throw new IllegalStateException("Utility class");
     }
     
-    public static Connection newConnection(Socket clientSocket)
+    public static Connection newConnection(DTOFormat dtoFormat, Socket clientSocket)
         throws IOException {
-        switch (ServerConfig.getDTOFormat()) {
+        switch (dtoFormat) {
             case JAVA_OBJECT:
                 return new JavaObjectConnection(clientSocket);
             case XML_FILE:
