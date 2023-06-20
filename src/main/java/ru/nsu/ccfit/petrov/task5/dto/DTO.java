@@ -1,7 +1,6 @@
 package ru.nsu.ccfit.petrov.task5.dto;
 
 import java.io.Serializable;
-import java.util.Set;
 import java.util.UUID;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
@@ -30,23 +29,16 @@ public class DTO
         ERROR
     }
 
-    @XmlAttribute
-    private final UUID id;
-    @XmlAttribute
-    private final Type type;
-    @XmlAttribute
-    private final Subtype subtype;
-    @XmlElement
-    private final UUID requestId;
-    @XmlElement
-    private final String username;
-    @XmlElement
-    private final String message;
-    @XmlElement
-    private final String[] users;
+    @XmlAttribute private final UUID id;
+    @XmlAttribute private final Type type;
+    @XmlAttribute private final Subtype subtype;
+    @XmlElement private final UUID requestId;
+    @XmlElement private final String username;
+    @XmlElement private final String message;
+    @XmlElement private final String[] users;
 
-    public DTO(Type type, Subtype subtype, UUID requestId, String username,
-               String message, String[] users) {
+    public DTO(Type type, Subtype subtype, UUID requestId, String username, String message,
+               String[] users) {
         this(UUID.randomUUID(), type, subtype, requestId, username, message, users);
     }
 
