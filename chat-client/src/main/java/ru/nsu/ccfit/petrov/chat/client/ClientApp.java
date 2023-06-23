@@ -1,7 +1,7 @@
-package ru.nsu.ccfit.petrov.task5.client;
+package ru.nsu.ccfit.petrov.chat.client;
 
 import javax.swing.SwingUtilities;
-import ru.nsu.ccfit.petrov.task5.client.view.StartMenuFrame;
+import ru.nsu.ccfit.petrov.chat.client.view.StartMenuFrame;
 
 public class ClientApp {
 

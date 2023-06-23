@@ -1,4 +1,4 @@
-package ru.nsu.ccfit.petrov.task5.client.listener.event;
+package ru.nsu.ccfit.petrov.chat.client.listener.event;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -8,5 +8,5 @@ import lombok.RequiredArgsConstructor;
 public class LogoutEvent
     implements Event {
 
-    private final String userName;
+    private final String username;
 }
