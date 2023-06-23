@@ -1,6 +1,6 @@
-package ru.nsu.ccfit.petrov.task5.server.database;
+package ru.nsu.ccfit.petrov.chat.server.database;
 
-import ru.nsu.ccfit.petrov.task5.connection.Connection;
+import ru.nsu.ccfit.petrov.chat.core.connection.Connection;
 
 public interface UserRepository {
 

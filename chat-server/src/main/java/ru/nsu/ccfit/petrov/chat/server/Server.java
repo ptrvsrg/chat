@@ -1,14 +1,14 @@
-package ru.nsu.ccfit.petrov.task5.server;
+package ru.nsu.ccfit.petrov.chat.server;
 
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.ServerSocket;
-import ru.nsu.ccfit.petrov.task5.dto.DTOFormat;
-import ru.nsu.ccfit.petrov.task5.server.database.UserRepository;
-import ru.nsu.ccfit.petrov.task5.server.database.UserRepositoryInMemory;
-import ru.nsu.ccfit.petrov.task5.server.service.AcceptService;
-import ru.nsu.ccfit.petrov.task5.server.service.RegisterService;
-import ru.nsu.ccfit.petrov.task5.server.service.RequestHandleService;
+import ru.nsu.ccfit.petrov.chat.core.dto.DTOFormat;
+import ru.nsu.ccfit.petrov.chat.server.database.UserRepository;
+import ru.nsu.ccfit.petrov.chat.server.database.UserRepositoryInMemory;
+import ru.nsu.ccfit.petrov.chat.server.service.AcceptService;
+import ru.nsu.ccfit.petrov.chat.server.service.RegisterService;
+import ru.nsu.ccfit.petrov.chat.server.service.RequestHandleService;
 
 public class Server {
 

@@ -1,4 +1,4 @@
-package ru.nsu.ccfit.petrov.task5.server.service;
+package ru.nsu.ccfit.petrov.chat.server.service;
 
 import java.io.IOException;
 import java.util.concurrent.ExecutorService;
@@ -6,12 +6,12 @@ import java.util.concurrent.Executors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.apache.logging.log4j.Level;
-import ru.nsu.ccfit.petrov.task5.connection.Connection;
-import ru.nsu.ccfit.petrov.task5.dto.DTO;
-import ru.nsu.ccfit.petrov.task5.dto.DTO.Subtype;
-import ru.nsu.ccfit.petrov.task5.dto.DTO.Type;
-import ru.nsu.ccfit.petrov.task5.server.database.User;
-import ru.nsu.ccfit.petrov.task5.server.database.UserRepository;
+import ru.nsu.ccfit.petrov.chat.core.connection.Connection;
+import ru.nsu.ccfit.petrov.chat.core.dto.DTO;
+import ru.nsu.ccfit.petrov.chat.core.dto.DTO.Subtype;
+import ru.nsu.ccfit.petrov.chat.core.dto.DTO.Type;
+import ru.nsu.ccfit.petrov.chat.server.database.User;
+import ru.nsu.ccfit.petrov.chat.server.database.UserRepository;
 
 @Log4j2
 @RequiredArgsConstructor
@@ -24,6 +24,10 @@ public class RegisterService {
 
     public void register(Connection connection) {
         registrars.execute(new RegisterTask(connection));
+    }
+
+    public void shutdown() {
+        registrars.shutdownNow();
     }
 
     @RequiredArgsConstructor

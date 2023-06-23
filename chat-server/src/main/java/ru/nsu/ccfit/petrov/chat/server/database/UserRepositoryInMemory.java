@@ -1,11 +1,11 @@
-package ru.nsu.ccfit.petrov.task5.server.database;
+package ru.nsu.ccfit.petrov.chat.server.database;
 
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 import lombok.Getter;
-import ru.nsu.ccfit.petrov.task5.connection.Connection;
+import ru.nsu.ccfit.petrov.chat.core.connection.Connection;
 
 @Getter
 public class UserRepositoryInMemory

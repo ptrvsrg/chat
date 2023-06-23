@@ -1,10 +1,10 @@
-package ru.nsu.ccfit.petrov.task5.server.config;
+package ru.nsu.ccfit.petrov.chat.server.config;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.InetAddress;
 import java.util.Properties;
-import ru.nsu.ccfit.petrov.task5.dto.DTOFormat;
+import ru.nsu.ccfit.petrov.chat.core.dto.DTOFormat;
 
 public class ServerConfig {
 

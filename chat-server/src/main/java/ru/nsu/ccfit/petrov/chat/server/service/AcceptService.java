@@ -1,4 +1,4 @@
-package ru.nsu.ccfit.petrov.task5.server.service;
+package ru.nsu.ccfit.petrov.chat.server.service;
 
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -8,9 +8,9 @@ import java.util.concurrent.Executors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.apache.logging.log4j.Level;
-import ru.nsu.ccfit.petrov.task5.connection.Connection;
-import ru.nsu.ccfit.petrov.task5.connection.ConnectionFactory;
-import ru.nsu.ccfit.petrov.task5.dto.DTOFormat;
+import ru.nsu.ccfit.petrov.chat.core.connection.Connection;
+import ru.nsu.ccfit.petrov.chat.core.connection.ConnectionFactory;
+import ru.nsu.ccfit.petrov.chat.core.dto.DTOFormat;
 
 @Log4j2
 @RequiredArgsConstructor
@@ -24,7 +24,7 @@ public class AcceptService {
 
     public void start() {
         acceptor.execute(() -> {
-            while (true) {
+            while (!acceptor.isShutdown()) {
                 try {
                     Socket clientSocket = serverSocket.accept();
                     clientSocket.setSoTimeout(timeout);
@@ -38,5 +38,9 @@ public class AcceptService {
                 }
             }
         });
+    }
+
+    public void shutdown() {
+        acceptor.shutdownNow();
     }
 }
