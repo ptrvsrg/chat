@@ -1,4 +1,4 @@
-package ru.nsu.ccfit.petrov.task5.dto;
+package ru.nsu.ccfit.petrov.chat.core.dto;
 
 public enum DTOFormat {
     JAVA_OBJECT,

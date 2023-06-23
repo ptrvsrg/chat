@@ -1,11 +1,11 @@
-package ru.nsu.ccfit.petrov.task5.connection;
+package ru.nsu.ccfit.petrov.chat.core.connection;
 
 import java.io.Closeable;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
-import ru.nsu.ccfit.petrov.task5.dto.DTO;
+import ru.nsu.ccfit.petrov.chat.core.dto.DTO;
 
 public abstract class Connection
     implements Closeable {

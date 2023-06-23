@@ -1,8 +1,8 @@
-package ru.nsu.ccfit.petrov.task5.connection;
+package ru.nsu.ccfit.petrov.chat.core.connection;
 
 import java.io.IOException;
 import java.net.Socket;
-import ru.nsu.ccfit.petrov.task5.dto.DTOFormat;
+import ru.nsu.ccfit.petrov.chat.core.dto.DTOFormat;
 
 public class ConnectionFactory {
 

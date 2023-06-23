@@ -1,14 +1,15 @@
-package ru.nsu.ccfit.petrov.task5.dto;
+package ru.nsu.ccfit.petrov.chat.core.dto;
 
 import java.io.Serializable;
 import java.util.UUID;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.Value;
 
-@Getter
+@Value
 @RequiredArgsConstructor
 @XmlRootElement
 public class DTO
@@ -29,13 +30,17 @@ public class DTO
         ERROR
     }
 
-    @XmlAttribute private final UUID id;
-    @XmlAttribute private final Type type;
-    @XmlAttribute private final Subtype subtype;
-    @XmlElement private final UUID requestId;
-    @XmlElement private final String username;
-    @XmlElement private final String message;
-    @XmlElement private final String[] users;
+    @XmlAttribute UUID id;
+    @XmlAttribute Type type;
+    @XmlAttribute Subtype subtype;
+    @XmlElement UUID requestId;
+    @XmlElement String username;
+    @XmlElement String message;
+    @XmlElementWrapper(name = "users") @XmlElement(name = "user") String[] users;
+
+    public DTO() {
+        this(null, null, null, null, null, null);
+    }
 
     public DTO(Type type, Subtype subtype, UUID requestId, String username, String message,
                String[] users) {
@@ -43,12 +48,12 @@ public class DTO
     }
 
 
-    public static DTO newLoginRequest(String userName) {
-        return new DTO(Type.REQUEST, Subtype.LOGIN, null, userName, null, null);
+    public static DTO newLoginRequest(String username) {
+        return new DTO(Type.REQUEST, Subtype.LOGIN, null, username, null, null);
     }
 
-    public static DTO newNewMessageRequest(String messageContent) {
-        return new DTO(Type.REQUEST, Subtype.NEW_MESSAGE, null, null, messageContent, null);
+    public static DTO newNewMessageRequest(String message) {
+        return new DTO(Type.REQUEST, Subtype.NEW_MESSAGE, null, null, message, null);
     }
 
     public static DTO newUserListRequest() {
@@ -71,15 +76,15 @@ public class DTO
         return new DTO(Type.RESPONSE, Subtype.ERROR, requestId, null, reason, null);
     }
 
-    public static DTO newLoginEvent(String userName) {
-        return new DTO(Type.EVENT, Subtype.LOGIN, null, userName, null, null);
+    public static DTO newLoginEvent(String username) {
+        return new DTO(Type.EVENT, Subtype.LOGIN, null, username, null, null);
     }
 
-    public static DTO newNewMessageEvent(String userName, String messageContent) {
-        return new DTO(Type.EVENT, Subtype.NEW_MESSAGE, null, userName, messageContent, null);
+    public static DTO newNewMessageEvent(String username, String message) {
+        return new DTO(Type.EVENT, Subtype.NEW_MESSAGE, null, username, message, null);
     }
 
-    public static DTO newLogoutEvent(String userName) {
-        return new DTO(Type.EVENT, Subtype.LOGOUT, null, userName, null, null);
+    public static DTO newLogoutEvent(String username) {
+        return new DTO(Type.EVENT, Subtype.LOGOUT, null, username, null, null);
     }
 }

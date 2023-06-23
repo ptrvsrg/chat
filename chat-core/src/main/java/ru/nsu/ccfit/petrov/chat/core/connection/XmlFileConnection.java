@@ -1,10 +1,10 @@
-package ru.nsu.ccfit.petrov.task5.connection;
+package ru.nsu.ccfit.petrov.chat.core.connection;
 
 import java.io.IOException;
 import java.net.Socket;
 import javax.xml.bind.JAXBException;
-import ru.nsu.ccfit.petrov.task5.dto.DTO;
-import ru.nsu.ccfit.petrov.task5.dto.XmlUtils;
+import ru.nsu.ccfit.petrov.chat.core.dto.DTO;
+import ru.nsu.ccfit.petrov.chat.core.dto.XmlUtils;
 
 public class XmlFileConnection
     extends Connection {
