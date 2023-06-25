@@ -1,16 +1,17 @@
 package ru.nsu.ccfit.petrov.chat.core.connection;
 
 import java.io.IOException;
-import java.net.Socket;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import lombok.RequiredArgsConstructor;
 import ru.nsu.ccfit.petrov.chat.core.dto.DTO;
 
+@RequiredArgsConstructor
 public class JavaObjectConnection
-    extends Connection {
+    implements Connection {
 
-    public JavaObjectConnection(Socket clientSocket)
-        throws IOException {
-        super(clientSocket);
-    }
+    private final ObjectInputStream in;
+    private final ObjectOutputStream out;
 
     @Override
     public void send(DTO dto)
@@ -28,7 +29,7 @@ public class JavaObjectConnection
                 return (DTO) in.readObject();
             }
         } catch (ClassNotFoundException | ClassCastException e) {
-            throw new IOException("Invalid message format : " + e);
+            throw new IOException("Invalid DTO format : " + e);
         }
     }
 }
