@@ -47,7 +47,6 @@ public class DTO
         this(UUID.randomUUID(), type, subtype, requestId, username, message, users);
     }
 
-
     public static DTO newLoginRequest(String username) {
         return new DTO(Type.REQUEST, Subtype.LOGIN, null, username, null, null);
     }
@@ -86,5 +85,53 @@ public class DTO
 
     public static DTO newLogoutEvent(String username) {
         return new DTO(Type.EVENT, Subtype.LOGOUT, null, username, null, null);
+    }
+
+    public static boolean isRequest(DTO dto) {
+        return dto.getType() == Type.REQUEST;
+    }
+
+    public static boolean isResponse(DTO dto) {
+        return dto.getType() == Type.RESPONSE;
+    }
+
+    public static boolean isEvent(DTO dto) {
+        return dto.getType() == Type.EVENT;
+    }
+
+    public static boolean isLoginRequest(DTO dto) {
+        return dto.getType() == Type.REQUEST && dto.getSubtype() == Subtype.LOGIN;
+    }
+
+    public static boolean isNewMessageRequest(DTO dto) {
+        return dto.getType() == Type.REQUEST && dto.getSubtype() == Subtype.NEW_MESSAGE;
+    }
+
+    public static boolean isUserListRequest(DTO dto) {
+        return dto.getType() == Type.REQUEST && dto.getSubtype() == Subtype.USER_LIST;
+    }
+
+    public static boolean isLogoutRequest(DTO dto) {
+        return dto.getType() == Type.REQUEST && dto.getSubtype() == Subtype.LOGOUT;
+    }
+
+    public static boolean isSuccessResponse(DTO dto) {
+        return dto.getType() == Type.RESPONSE && dto.getSubtype() == Subtype.SUCCESS;
+    }
+
+    public static boolean isErrorResponse(DTO dto) {
+        return dto.getType() == Type.RESPONSE && dto.getSubtype() == Subtype.ERROR;
+    }
+
+    public static boolean isLoginEvent(DTO dto) {
+        return dto.getType() == Type.EVENT && dto.getSubtype() == Subtype.LOGIN;
+    }
+
+    public static boolean isNewMessageEvent(DTO dto) {
+        return dto.getType() == Type.EVENT && dto.getSubtype() == Subtype.NEW_MESSAGE;
+    }
+
+    public static boolean isLogoutEvent(DTO dto) {
+        return dto.getType() == Type.EVENT && dto.getSubtype() == Subtype.LOGOUT;
     }
 }
