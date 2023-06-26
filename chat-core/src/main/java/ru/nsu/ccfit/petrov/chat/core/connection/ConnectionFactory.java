@@ -1,12 +1,5 @@
 package ru.nsu.ccfit.petrov.chat.core.connection;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.PrintWriter;
-import java.net.Socket;
 import ru.nsu.ccfit.petrov.chat.core.dto.DTOFormat;
 
 public class ConnectionFactory {
@@ -15,17 +8,12 @@ public class ConnectionFactory {
         throw new IllegalStateException("Utility class");
     }
 
-    public static Connection newConnection(DTOFormat dtoFormat, Socket clientSocket)
-        throws IOException {
+    public static Connection newConnection(DTOFormat dtoFormat) {
         switch (dtoFormat) {
             case JAVA_OBJECT:
-                return new JavaObjectConnection(
-                    new ObjectInputStream(clientSocket.getInputStream()),
-                    new ObjectOutputStream(clientSocket.getOutputStream()));
+                return new JavaObjectConnection();
             case XML_FILE:
-                return new XmlFileConnection(
-                    new BufferedReader(new InputStreamReader(clientSocket.getInputStream())),
-                    new PrintWriter(clientSocket.getOutputStream(), true));
+                return new XmlFileConnection();
             default:
                 throw new IllegalArgumentException("Unsupported DTO format");
         }
