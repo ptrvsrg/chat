@@ -1,9 +1,15 @@
 package ru.nsu.ccfit.petrov.chat.core.connection;
 
+import java.io.Closeable;
 import java.io.IOException;
+import java.net.Socket;
 import ru.nsu.ccfit.petrov.chat.core.dto.DTO;
 
-public interface Connection {
+public interface Connection
+    extends Closeable {
+
+    void connect(Socket clientSocket)
+        throws IOException;
 
     void send(DTO dto)
         throws IOException;
