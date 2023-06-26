@@ -1,10 +1,18 @@
 package ru.nsu.ccfit.petrov.chat.core.connection;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.io.PrintWriter;
+import java.lang.reflect.Field;
+import java.net.Socket;
 import javax.xml.bind.JAXBException;
 import org.assertj.core.api.Assertions;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.MockedStatic;
@@ -17,9 +25,60 @@ import ru.nsu.ccfit.petrov.chat.core.dto.XmlUtils;
 public class XmlFileConnectionTest
     extends Assertions {
 
-    private final BufferedReader in = Mockito.mock(BufferedReader.class);
-    private final PrintWriter out = Mockito.mock(PrintWriter.class);
-    private final XmlFileConnection connection = new XmlFileConnection(in, out);
+    private BufferedReader in;
+    private PrintWriter out;
+    private final XmlFileConnection connection = new XmlFileConnection();
+
+    @Before
+    public void setUp()
+        throws NoSuchFieldException, IllegalAccessException {
+        in = Mockito.spy(new BufferedReader(new InputStreamReader(Mockito.mock(InputStream.class))));
+        out = Mockito.spy(new PrintWriter(Mockito.mock(OutputStream.class), true));
+
+        setFieldValue("in", connection, in);
+        setFieldValue("out", connection, out);
+    }
+
+    private void setFieldValue(String fieldName, Object object, Object value)
+        throws NoSuchFieldException, IllegalAccessException {
+        Field field = XmlFileConnection.class.getDeclaredField(fieldName);
+        field.setAccessible(true);
+        field.set(object, value);
+    }
+
+    @Test
+    public void connect_socketReturnCorrectStreams()
+        throws IOException {
+        // prepare
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(
+            byteArrayOutputStream.toByteArray());
+
+        // do
+        try (Socket clientSocket = Mockito.mock(Socket.class)) {
+            Mockito.when(clientSocket.getInputStream()).thenReturn(byteArrayInputStream);
+            Mockito.when(clientSocket.getOutputStream()).thenReturn(byteArrayOutputStream);
+            assertThatNoException().isThrownBy(() -> connection.connect(clientSocket));
+        }
+    }
+
+    @Test
+    public void connect_socketThrowsIOException_thrownIOException()
+        throws IOException {
+        try (Socket clientSocket = Mockito.mock(Socket.class)) {
+            Mockito.when(clientSocket.getInputStream()).thenThrow(new IOException());
+            assertThatIOException().isThrownBy(() -> connection.connect(clientSocket));
+        }
+    }
+
+    @Test
+    public void send_outIsNull_thrownIOException()
+        throws NoSuchFieldException, IllegalAccessException {
+        setFieldValue("out", connection, null);
+
+        assertThatIOException().isThrownBy(() -> connection.send(new DTO()))
+                               .withMessage("Connection not established");
+    }
 
     @Test
     public void send_noException() {
@@ -42,11 +101,19 @@ public class XmlFileConnectionTest
     }
 
     @Test
+    public void receive_inIsNull_thrownIOException()
+        throws NoSuchFieldException, IllegalAccessException {
+        setFieldValue("in", connection, null);
+
+        assertThatIOException().isThrownBy(connection::receive)
+                               .withMessage("Connection not established");
+    }
+
+    @Test
     public void receive_noException()
         throws IOException, JAXBException {
         DTO expectedDto = new DTO();
-        Mockito.when(in.readLine())
-               .thenReturn(XmlUtils.dtoToXml(expectedDto));
+        Mockito.doReturn(XmlUtils.dtoToXml(expectedDto)).when(in).readLine();
 
         assertThatNoException().isThrownBy(
             () -> assertThat(connection.receive()).isEqualTo(expectedDto));
@@ -55,8 +122,7 @@ public class XmlFileConnectionTest
     @Test
     public void receive_xmlToDtoThrowJAXBException_thrownIOException()
         throws IOException {
-        Mockito.when(in.readLine())
-               .thenReturn("");
+        Mockito.doReturn("").when(in).readLine();
 
         try (MockedStatic<XmlUtils> xmlUtils = Mockito.mockStatic(XmlUtils.class)) {
             xmlUtils.when(() -> XmlUtils.xmlToDto(Mockito.any(String.class)))
