@@ -8,7 +8,6 @@ import lombok.extern.log4j.Log4j2;
 import org.apache.logging.log4j.Level;
 import ru.nsu.ccfit.petrov.chat.core.connection.Connection;
 import ru.nsu.ccfit.petrov.chat.core.dto.DTO;
-import ru.nsu.ccfit.petrov.chat.core.dto.DTO.Type;
 import ru.nsu.ccfit.petrov.chat.server.database.User;
 import ru.nsu.ccfit.petrov.chat.server.database.UserRepository;
 
@@ -43,55 +42,75 @@ public class RequestHandleService {
                 return;
             }
 
-            try {
-                DTO request = user.getConnection()
-                                  .receive();
+            // Receive request
+            DTO request = receiveRequest();
+            if (request == null) {
+                removeUser();
+                return;
+            }
 
-                if (!isRequest(request)) {
-                    handlers.execute(this);
+            // Send response and execute request actions
+            if (!DTO.isRequest(request)) {
+                if (!sendResponse(DTO.newErrorResponse(request.getId(), "DTO is not request"))) {
+                    removeUser();
                     return;
                 }
-
-                switch (request.getSubtype()) {
-                    case NEW_MESSAGE: {
-                        user.getConnection()
-                            .send(DTO.newSuccessResponse(request.getId()));
-                        sendEvent(DTO.newNewMessageEvent(user.getUsername(), request.getMessage()));
-                        break;
-                    }
-                    case USER_LIST: {
-                        String[] usernames = userRepository.getUsernames();
-                        user.getConnection()
-                            .send(DTO.newSuccessResponse(request.getId(), usernames));
-                        break;
-                    }
-                    case LOGOUT: {
-                        user.getConnection()
-                            .send(DTO.newSuccessResponse(request.getId()));
-                        removeUser();
-                        return;
-                    }
+            } else if (DTO.isNewMessageRequest(request)) {
+                if (!sendResponse(DTO.newSuccessResponse(request.getId()))) {
+                    removeUser();
+                    return;
                 }
-
-                handlers.execute(this);
-            } catch (IOException e) {
-                log.info("Message handling aborted");
-                log.catching(Level.INFO, e);
+                sendEvent(DTO.newNewMessageEvent(user.getUsername(), request.getMessage()));
+            } else if (DTO.isUserListRequest(request)) {
+                if (!sendResponse(
+                    DTO.newSuccessResponse(request.getId(), userRepository.getUsernames()))) {
+                    removeUser();
+                    return;
+                }
+            } else if (DTO.isLogoutRequest(request)) {
+                if (!sendResponse(DTO.newSuccessResponse(request.getId()))) {
+                    removeUser();
+                    return;
+                }
                 removeUser();
+            }
+
+            handlers.execute(this);
+        }
+
+        private DTO receiveRequest() {
+            DTO request;
+            try {
+                request = user.getConnection()
+                              .receive();
+            } catch (IOException e) {
+                log.error("Failed to receive request");
+                log.catching(Level.ERROR, e);
+                return null;
+            }
+
+            return request;
+        }
+
+        private boolean sendResponse(DTO response) {
+            try {
+                user.getConnection()
+                    .send(response);
+                return true;
+            } catch (IOException e) {
+                log.error("Failed to send response");
+                log.catching(Level.ERROR, e);
+                return false;
             }
         }
 
-        private boolean isRequest(DTO request) {
-            return request != null && request.getType() == Type.REQUEST;
-        }
-
         private void sendEvent(DTO dto) {
-            for (Connection userConnection : userRepository.getConnections()) {
+            for (Connection connection : userRepository.getConnections()) {
                 try {
-                    userConnection.send(dto);
+                    connection.send(dto);
                 } catch (IOException e) {
-                    log.info("Message didn't send");
-                    log.catching(Level.INFO, e);
+                    log.error("Failed to send event");
+                    log.catching(Level.ERROR, e);
                 }
             }
         }
@@ -103,8 +122,16 @@ public class RequestHandleService {
 
             sendEvent(DTO.newLogoutEvent(user.getUsername()));
             userRepository.removeUser(user.getUsername());
-            user.getConnection()
-                .close();
+            closeResource(user.getConnection());
+        }
+
+        private void closeResource(AutoCloseable resource) {
+            try {
+                resource.close();
+            } catch (Exception e) {
+                log.error("Failed to close resource");
+                log.catching(Level.ERROR, e);
+            }
         }
     }
 }

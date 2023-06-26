@@ -23,24 +23,86 @@ public class AcceptService {
     private final RegisterService registerService;
 
     public void start() {
-        acceptor.execute(() -> {
-            while (!acceptor.isShutdown()) {
-                try {
-                    Socket clientSocket = serverSocket.accept();
-                    clientSocket.setSoTimeout(timeout);
-                    Connection connection = ConnectionFactory.newConnection(dtoFormat,
-                                                                            clientSocket);
-                    registerService.register(connection);
-                } catch (IOException e) {
-                    log.info("Connection lost");
-                    log.catching(Level.INFO, e);
-                    break;
-                }
-            }
-        });
+        log.debug("Accept service started");
+        acceptor.execute(new AcceptTask());
     }
 
     public void shutdown() {
-        acceptor.shutdownNow();
+        acceptor.shutdown();
+    }
+
+    private class AcceptTask
+        implements Runnable {
+
+        @Override
+        public void run() {
+            while (!acceptor.isShutdown()) {
+                Socket clientSocket = accept();
+                if (clientSocket == null) {
+                    continue;
+                }
+                log.info(String.format("Client %s accepted", clientSocket));
+
+                if (setTimeout(clientSocket)) {
+                    continue;
+                }
+
+                Connection connection = createConnection(clientSocket);
+                if (connection == null) {
+                    continue;
+                }
+
+                registerService.register(connection);
+            }
+        }
+
+        private Socket accept() {
+            Socket clientSocket;
+            try {
+                clientSocket = serverSocket.accept();
+            } catch (IOException e) {
+                log.error("Failed to accept client connection");
+                log.catching(Level.ERROR, e);
+                return null;
+            }
+
+            return clientSocket;
+        }
+
+        private boolean setTimeout(Socket clientSocket) {
+            try {
+                clientSocket.setSoTimeout(timeout);
+            } catch (IOException e) {
+                log.error("Failed to set socket timeout");
+                log.catching(Level.ERROR, e);
+                closeResource(clientSocket);
+                return true;
+            }
+
+            return false;
+        }
+
+        private Connection createConnection(Socket clientSocket) {
+            Connection connection = ConnectionFactory.newConnection(dtoFormat);
+            try {
+                connection.connect(clientSocket);
+            } catch (IOException e) {
+                log.error("Failed to create read/write connection");
+                log.catching(Level.ERROR, e);
+                closeResource(connection);
+                return null;
+            }
+            
+            return connection;
+        }
+        
+        private void closeResource(AutoCloseable resource) {
+            try {
+                resource.close();
+            } catch (Exception e) {
+                log.error("Failed to close resource");
+                log.catching(Level.ERROR, e);
+            }
+        }
     }
 }
