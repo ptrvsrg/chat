@@ -21,6 +21,11 @@ public class XmlFileConnection
     private BufferedWriter out;
 
     @Override
+    public Socket getSocket() {
+        return clientSocket;
+    }
+
+    @Override
     public void connect(Socket clientSocket)
         throws IOException {
         this.clientSocket = clientSocket;

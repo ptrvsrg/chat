@@ -8,6 +8,8 @@ import ru.nsu.ccfit.petrov.chat.core.dto.DTO;
 public interface Connection
     extends Closeable {
 
+    Socket getSocket();
+
     void connect(Socket clientSocket)
         throws IOException;
 
