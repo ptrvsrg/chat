@@ -1,13 +1,15 @@
 package ru.nsu.ccfit.petrov.chat.core.connection;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
-import java.io.PrintWriter;
+import java.io.OutputStreamWriter;
+import java.io.StringReader;
 import java.lang.reflect.Field;
 import java.net.Socket;
 import javax.xml.bind.JAXBException;
@@ -26,14 +28,16 @@ public class XmlFileConnectionTest
     extends Assertions {
 
     private BufferedReader in;
-    private PrintWriter out;
+    private BufferedWriter out;
     private final XmlFileConnection connection = new XmlFileConnection();
 
     @Before
     public void setUp()
         throws NoSuchFieldException, IllegalAccessException {
-        in = Mockito.spy(new BufferedReader(new InputStreamReader(Mockito.mock(InputStream.class))));
-        out = Mockito.spy(new PrintWriter(Mockito.mock(OutputStream.class), true));
+        in = Mockito.spy(
+            new BufferedReader(new InputStreamReader(Mockito.mock(InputStream.class))));
+        out = Mockito.spy(
+            new BufferedWriter(new OutputStreamWriter(Mockito.mock(OutputStream.class))));
 
         setFieldValue("in", connection, in);
         setFieldValue("out", connection, out);
@@ -56,8 +60,10 @@ public class XmlFileConnectionTest
 
         // do
         try (Socket clientSocket = Mockito.mock(Socket.class)) {
-            Mockito.when(clientSocket.getInputStream()).thenReturn(byteArrayInputStream);
-            Mockito.when(clientSocket.getOutputStream()).thenReturn(byteArrayOutputStream);
+            Mockito.when(clientSocket.getInputStream())
+                   .thenReturn(byteArrayInputStream);
+            Mockito.when(clientSocket.getOutputStream())
+                   .thenReturn(byteArrayOutputStream);
             assertThatNoException().isThrownBy(() -> connection.connect(clientSocket));
         }
     }
@@ -66,7 +72,8 @@ public class XmlFileConnectionTest
     public void connect_socketThrowsIOException_thrownIOException()
         throws IOException {
         try (Socket clientSocket = Mockito.mock(Socket.class)) {
-            Mockito.when(clientSocket.getInputStream()).thenThrow(new IOException());
+            Mockito.when(clientSocket.getInputStream())
+                   .thenThrow(new IOException());
             assertThatIOException().isThrownBy(() -> connection.connect(clientSocket));
         }
     }
@@ -81,10 +88,11 @@ public class XmlFileConnectionTest
     }
 
     @Test
-    public void send_noException() {
+    public void send_noException()
+        throws IOException {
         Mockito.doNothing()
                .when(out)
-               .println(Mockito.any(String.class));
+               .write(Mockito.any(String.class));
 
         assertThatNoException().isThrownBy(() -> connection.send(new DTO()));
     }
@@ -111,9 +119,11 @@ public class XmlFileConnectionTest
 
     @Test
     public void receive_noException()
-        throws IOException, JAXBException {
+        throws NoSuchFieldException, IllegalAccessException, JAXBException {
         DTO expectedDto = new DTO();
-        Mockito.doReturn(XmlUtils.dtoToXml(expectedDto)).when(in).readLine();
+        String message = XmlUtils.dtoToXml(expectedDto) + "\n";
+        setFieldValue("in", connection,
+                      new BufferedReader(new StringReader(message)));
 
         assertThatNoException().isThrownBy(
             () -> assertThat(connection.receive()).isEqualTo(expectedDto));
@@ -122,7 +132,9 @@ public class XmlFileConnectionTest
     @Test
     public void receive_xmlToDtoThrowJAXBException_thrownIOException()
         throws IOException {
-        Mockito.doReturn("").when(in).readLine();
+        Mockito.doReturn("")
+               .when(in)
+               .readLine();
 
         try (MockedStatic<XmlUtils> xmlUtils = Mockito.mockStatic(XmlUtils.class)) {
             xmlUtils.when(() -> XmlUtils.xmlToDto(Mockito.any(String.class)))
