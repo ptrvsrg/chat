@@ -33,7 +33,8 @@ public class Controller {
 
         try {
             Socket clientSocket = new Socket(serverAddress, serverPort);
-            connection = ConnectionFactory.newConnection(ClientConfig.getDTOFormat(), clientSocket);
+            connection = ConnectionFactory.newConnection(ClientConfig.getDTOFormat());
+            connection.connect(clientSocket);
         } catch (IOException e) {
             listeningSupport.notifyListeners(new ErrorEvent("Server is not available"));
             return false;
