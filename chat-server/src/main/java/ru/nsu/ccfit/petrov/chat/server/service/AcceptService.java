@@ -40,16 +40,18 @@ public class AcceptService {
                 if (clientSocket == null) {
                     continue;
                 }
-                log.info(String.format("Client %s accepted", clientSocket));
+                log.info(String.format("Client %s accepted", clientSocket.getRemoteSocketAddress()));
 
                 if (setTimeout(clientSocket)) {
                     continue;
                 }
+                log.info(String.format("Set timeout for client %s", clientSocket.getRemoteSocketAddress()));
 
                 Connection connection = createConnection(clientSocket);
                 if (connection == null) {
                     continue;
                 }
+                log.info(String.format("Create read/write client %s connection", clientSocket.getRemoteSocketAddress()));
 
                 registerService.register(connection);
             }

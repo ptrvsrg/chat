@@ -50,7 +50,8 @@ public class RegisterService {
 
                 if (DTO.isSuccessResponse(response)) {
                     sendEvent(DTO.newLoginEvent(request.getUsername()));
-                    userRepository.addUser(new User(request.getUsername(), connection));
+                    log.info(String.format("Client %s is registered", connection.getSocket()
+                                                                                .getRemoteSocketAddress()));
                     requestHandleService.handleRequests(connection);
                     return;
                 }
