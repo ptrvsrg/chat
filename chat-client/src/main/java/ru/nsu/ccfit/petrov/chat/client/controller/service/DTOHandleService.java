@@ -69,19 +69,18 @@ public class DTOHandleService {
         @Override
         public void run() {
             while (!receivers.isShutdown()) {
+                DTO dto;
                 try {
-                    DTO dto = connection.receive();
-                    switch (dto.getType()) {
-                        case RESPONSE:
-                            processResponse(dto);
-                            break;
-                        case EVENT:
-                            processEvent(dto);
-                            break;
-                    }
+                    dto = connection.receive();
                 } catch (IOException e) {
                     listeningSupport.notifyListeners(new ErrorEvent("Server is not available"));
                     return;
+                }
+
+                if (DTO.isResponse(dto)) {
+                    processResponse(dto);
+                } else if (DTO.isEvent(dto)) {
+                    processEvent(dto);
                 }
             }
         }
@@ -95,19 +94,14 @@ public class DTOHandleService {
         }
 
         private void processEvent(DTO event) {
-            switch (event.getSubtype()) {
-                case LOGIN:
-                    listeningSupport.notifyListeners(new LoginEvent(event.getUsername()));
-                    break;
-                case NEW_MESSAGE:
-                    listeningSupport.notifyListeners(
-                        new NewMessageEvent(event.getUsername(),
-                                            Objects.equals(event.getUsername(), username),
-                                            event.getMessage()));
-                    break;
-                case LOGOUT:
-                    listeningSupport.notifyListeners(new LogoutEvent(event.getUsername()));
-                    break;
+            if (DTO.isLoginEvent(event)) {
+                listeningSupport.notifyListeners(new LoginEvent(event.getUsername()));
+            } else if (DTO.isNewMessageEvent(event)) {
+                boolean isCurrentUser = Objects.equals(event.getUsername(), username);
+                listeningSupport.notifyListeners(
+                    new NewMessageEvent(event.getUsername(), isCurrentUser, event.getMessage()));
+            } else if (DTO.isLogoutEvent(event)) {
+                listeningSupport.notifyListeners(new LogoutEvent(event.getUsername()));
             }
         }
     }
