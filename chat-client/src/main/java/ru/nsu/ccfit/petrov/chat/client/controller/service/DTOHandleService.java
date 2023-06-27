@@ -36,8 +36,6 @@ public class DTOHandleService {
 
     public DTO sendRequest(DTO request) {
         CompletableFuture<DTO> futureResponse = new CompletableFuture<>();
-        requests.put(request.getId(), futureResponse);
-
         CompletableFuture.runAsync(() -> {
             try {
                 connection.send(request);
@@ -45,6 +43,7 @@ public class DTOHandleService {
                 futureResponse.completeExceptionally(e);
             }
         }, senders);
+        requests.put(request.getId(), futureResponse);
 
         try {
             return futureResponse.get();
