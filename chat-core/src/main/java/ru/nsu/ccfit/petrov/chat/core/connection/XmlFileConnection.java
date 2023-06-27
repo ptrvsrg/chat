@@ -1,9 +1,10 @@
 package ru.nsu.ccfit.petrov.chat.core.connection;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.PrintWriter;
+import java.io.OutputStreamWriter;
 import java.net.Socket;
 import javax.xml.bind.JAXBException;
 import lombok.RequiredArgsConstructor;
@@ -16,14 +17,14 @@ public class XmlFileConnection
 
     private Socket clientSocket;
     private BufferedReader in;
-    private PrintWriter out;
+    private BufferedWriter out;
 
     @Override
     public void connect(Socket clientSocket)
         throws IOException {
         this.clientSocket = clientSocket;
         this.in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-        this.out = new PrintWriter(clientSocket.getOutputStream(), true);
+        this.out = new BufferedWriter(new OutputStreamWriter(clientSocket.getOutputStream()));
     }
 
     @Override
@@ -40,7 +41,9 @@ public class XmlFileConnection
             throw new IOException("Invalid DTO format : " + e);
         }
 
-        out.println(xml);
+        out.write(xml);
+        out.newLine();
+        out.flush();
     }
 
     @Override
