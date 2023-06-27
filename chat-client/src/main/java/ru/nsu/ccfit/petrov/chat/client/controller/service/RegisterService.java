@@ -28,7 +28,7 @@ public class RegisterService {
             return false;
         }
 
-        if (response.getSubtype() == Subtype.ERROR) {
+        if (DTO.isErrorResponse(response)) {
             listeningSupport.notifyListeners(new ErrorEvent(response.getMessage()));
             return false;
         }
@@ -56,8 +56,7 @@ public class RegisterService {
             while (!registrar.isShutdown()) {
                 DTO response = connection.receive();
 
-                if (response.getType() == Type.RESPONSE &&
-                    response.getRequestId() == request.getId()) {
+                if (DTO.isResponse(response)) {
                     return response;
                 }
             }
