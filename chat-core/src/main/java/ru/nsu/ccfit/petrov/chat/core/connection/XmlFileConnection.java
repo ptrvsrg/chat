@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.Socket;
+import java.util.Objects;
 import javax.xml.bind.JAXBException;
 import lombok.RequiredArgsConstructor;
 import ru.nsu.ccfit.petrov.chat.core.dto.DTO;
@@ -53,13 +54,26 @@ public class XmlFileConnection
             throw new IOException("Connection not established");
         }
 
-        String xml = in.readLine();
+        String xml = readXml();
 
         try {
             return XmlUtils.xmlToDto(xml);
         } catch (JAXBException e) {
             throw new IOException("Invalid DTO format : " + e);
         }
+    }
+
+    private String readXml()
+        throws IOException {
+        StringBuilder xmlFile = new StringBuilder();
+
+        String line;
+        while (!Objects.equals(line = in.readLine(), "")) {
+            xmlFile.append(line);
+            xmlFile.append('\n');
+        }
+
+        return xmlFile.toString();
     }
 
     @Override
