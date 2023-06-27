@@ -49,6 +49,7 @@ public class Controller {
         boolean registerResult = registerService.register(connection, username);
         if (registerResult) {
             dtoHandleService = new DTOHandleService(username, connection, listeningSupport);
+            dtoHandleService.handle();
         }
 
         registerService.shutdown();

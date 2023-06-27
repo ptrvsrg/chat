@@ -30,7 +30,7 @@ public class DTOHandleService {
     private final Connection connection;
     private final ListeningSupport listeningSupport;
 
-    public void start() {
+    public void handle() {
         CompletableFuture.runAsync(new DTOHandleTask(), receivers);
     }
 
