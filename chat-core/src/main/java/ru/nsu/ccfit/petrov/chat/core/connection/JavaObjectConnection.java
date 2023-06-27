@@ -5,6 +5,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import lombok.RequiredArgsConstructor;
+import lombok.Synchronized;
 import ru.nsu.ccfit.petrov.chat.core.dto.DTO;
 
 @RequiredArgsConstructor
@@ -29,7 +30,8 @@ public class JavaObjectConnection
     }
 
     @Override
-    public synchronized void send(DTO dto)
+    @Synchronized
+    public void send(DTO dto)
         throws IOException {
         if (out == null) {
             throw new IOException("Connection not established");
@@ -39,7 +41,8 @@ public class JavaObjectConnection
     }
 
     @Override
-    public synchronized DTO receive()
+    @Synchronized
+    public DTO receive()
         throws IOException {
         if (in == null) {
             throw new IOException("Connection not established");
