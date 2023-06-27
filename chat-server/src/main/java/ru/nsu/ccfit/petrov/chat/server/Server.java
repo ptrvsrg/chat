@@ -20,6 +20,6 @@ public class Server {
         RegisterService registerService = new RegisterService(userRepository, requestHandleService);
         AcceptService acceptService =  new AcceptService(serverSocket, timeout, dtoFormat, registerService);
 
-        acceptService.start();
+        acceptService.accept();
     }
 }

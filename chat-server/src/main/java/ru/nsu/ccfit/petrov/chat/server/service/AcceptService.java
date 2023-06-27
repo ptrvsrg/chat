@@ -22,8 +22,7 @@ public class AcceptService {
     private final DTOFormat dtoFormat;
     private final RegisterService registerService;
 
-    public void start() {
-        log.debug("Accept service started");
+    public void accept() {
         acceptor.execute(new AcceptTask());
     }
 
