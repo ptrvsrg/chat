@@ -10,6 +10,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -33,26 +34,27 @@ public class StartMenuFrame {
     private static final int WIDTH = 1000;
     private static final int HEIGHT = 800;
     private static final int POPUP_DISPLAY = 5000;
-    private static final Color BACKGROUND_COLOR = new Color(0, 160, 0);
-    private static final Color BUTTON_COLOR = new Color(0, 150, 0);
+    private static final Color BACKGROUND_COLOR = new Color(0, 150, 150);
+    private static final Color BUTTON_COLOR = new Color(0, 140, 140);
+    private static final Color ERROR_MESSAGE_COLOR = new Color(0, 150, 150);
     private static final Font TITLE_FONT = new Font(Font.DIALOG, Font.BOLD, 50);
     private static final Font FIELD_TITLE_FONT = new Font(Font.DIALOG, Font.BOLD, 25);
     private static final Font FIELD_TEXT_FONT = new Font(Font.DIALOG, Font.PLAIN, 22);
     private static final Font BUTTON_FONT = new Font(Font.DIALOG, Font.BOLD, 30);
-    private static final Font ERROR_MESSAGE_FONT = new Font(Font.DIALOG, Font.ITALIC, 25);
+    private static final Font ERROR_MESSAGE_FONT = new Font(Font.DIALOG, Font.BOLD, 25);
     private final JFrame frame = new JFrame();
     private final JTextField serverAddressTextField = new JTextField();
     private final JTextField serverPortTextField = new JTextField();
     private final JTextField usernameTextField = new JTextField();
     private final JLabel errorMessageLabel = new JLabel();
     private final Controller controller = new Controller();
+    private final GridBagConstraints contentPaneConstraints = new GridBagConstraints();
 
     public StartMenuFrame() {
         frame.setTitle(TITLE);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(WIDTH, HEIGHT);
         frame.setLocationRelativeTo(null);
-        frame.setResizable(false);
         frame.setContentPane(createContentPane());
         frame.setVisible(true);
 
@@ -62,6 +64,9 @@ public class StartMenuFrame {
     private JPanel createContentPane() {
         JPanel contentPane = new JPanel(new GridBagLayout());
         contentPane.setBackground(BACKGROUND_COLOR);
+
+        contentPaneConstraints.gridx = GridBagConstraints.RELATIVE;
+        contentPaneConstraints.gridy = 0;
 
         addAboutButton(contentPane);
         addTitleLabel(contentPane);
@@ -79,13 +84,12 @@ public class StartMenuFrame {
         aboutButton.setBackground(BUTTON_COLOR);
         aboutButton.addActionListener(new AboutButtonListener());
 
-        GridBagConstraints gridBagConstraints = new GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 0;
-        gridBagConstraints.anchor = GridBagConstraints.NORTHWEST;
-        gridBagConstraints.insets = new Insets(0, 0, 50, 0);
+        contentPaneConstraints.anchor = GridBagConstraints.NORTHWEST;
+        contentPaneConstraints.insets = new Insets(0, 0, 50, 0);
 
-        contentPane.add(aboutButton, gridBagConstraints);
+        contentPane.add(aboutButton, contentPaneConstraints);
+
+        contentPaneConstraints.gridy++;
     }
 
     private void addTitleLabel(JPanel contentPane) {
@@ -93,26 +97,24 @@ public class StartMenuFrame {
         titleLabel.setFont(TITLE_FONT);
         titleLabel.setForeground(Color.WHITE);
 
-        GridBagConstraints gridBagConstraints = new GridBagConstraints();
-        gridBagConstraints.gridx = GridBagConstraints.RELATIVE;
-        gridBagConstraints.gridy = 1;
-        gridBagConstraints.anchor = GridBagConstraints.CENTER;
-        gridBagConstraints.insets = new Insets(50, 0, 50, 0);
+        contentPaneConstraints.anchor = GridBagConstraints.CENTER;
+        contentPaneConstraints.insets = new Insets(50, 0, 50, 0);
 
-        contentPane.add(titleLabel, gridBagConstraints);
+        contentPane.add(titleLabel, contentPaneConstraints);
+
+        contentPaneConstraints.gridy++;
     }
 
     private void addInputPanel(JPanel contentPane) {
         JPanel inputPanel = new JPanel(new GridLayout(3, 2, 20, 20));
         inputPanel.setBackground(new Color(0, 0, 0, 0));
 
-        GridBagConstraints gridBagConstraints = new GridBagConstraints();
-        gridBagConstraints.gridx = GridBagConstraints.RELATIVE;
-        gridBagConstraints.gridy = 2;
-        gridBagConstraints.anchor = GridBagConstraints.CENTER;
-        gridBagConstraints.insets = new Insets(50, 0, 50, 0);
+        contentPaneConstraints.anchor = GridBagConstraints.CENTER;
+        contentPaneConstraints.insets = new Insets(50, 0, 50, 0);
 
-        contentPane.add(inputPanel, gridBagConstraints);
+        contentPane.add(inputPanel, contentPaneConstraints);
+
+        contentPaneConstraints.gridy++;
 
         addField(SERVER_ADDRESS_FIELD_TITLE, serverAddressTextField, inputPanel);
         addField(SERVER_PORT_FIELD_TITLE, serverPortTextField, inputPanel);
@@ -136,33 +138,38 @@ public class StartMenuFrame {
         startButton.setBackground(BUTTON_COLOR);
         startButton.addActionListener(new StartButtonListener());
 
-        GridBagConstraints gridBagConstraints = new GridBagConstraints();
-        gridBagConstraints.gridx = GridBagConstraints.RELATIVE;
-        gridBagConstraints.gridy = 3;
-        gridBagConstraints.anchor = GridBagConstraints.CENTER;
-        gridBagConstraints.insets = new Insets(50, 0, 0, 0);
+        contentPaneConstraints.anchor = GridBagConstraints.CENTER;
+        contentPaneConstraints.insets = new Insets(50, 0, 0, 0);
 
-        contentPane.add(startButton, gridBagConstraints);
+        contentPane.add(startButton, contentPaneConstraints);
+
+        contentPaneConstraints.gridy++;
     }
 
     private void addErrorLabel(JPanel contentPane) {
         errorMessageLabel.setFont(ERROR_MESSAGE_FONT);
-        errorMessageLabel.setForeground(Color.WHITE);
+        errorMessageLabel.setForeground(ERROR_MESSAGE_COLOR);
+        errorMessageLabel.setOpaque(false);
+        errorMessageLabel.setBackground(Color.WHITE);
+        errorMessageLabel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         errorMessageLabel.setText(" ");
 
-        GridBagConstraints gridBagConstraints = new GridBagConstraints();
-        gridBagConstraints.gridx = GridBagConstraints.RELATIVE;
-        gridBagConstraints.gridy = 4;
-        gridBagConstraints.anchor = GridBagConstraints.CENTER;
-        gridBagConstraints.insets = new Insets(50, 0, 0, 0);
+        contentPaneConstraints.anchor = GridBagConstraints.CENTER;
+        contentPaneConstraints.insets = new Insets(50, 0, 0, 0);
 
-        contentPane.add(errorMessageLabel, gridBagConstraints);
+        contentPane.add(errorMessageLabel, contentPaneConstraints);
+
+        contentPaneConstraints.gridy++;
     }
 
     private void showErrorMessage(String message) {
+        errorMessageLabel.setOpaque(true);
         errorMessageLabel.setText(message);
 
-        Timer timer = new Timer(POPUP_DISPLAY, e -> errorMessageLabel.setText(" "));
+        Timer timer = new Timer(POPUP_DISPLAY, e -> {
+            errorMessageLabel.setOpaque(false);
+            errorMessageLabel.setText(" ");
+        });
         timer.setRepeats(false);
         timer.start();
     }
@@ -172,9 +179,7 @@ public class StartMenuFrame {
 
         private static final String ABOUT_PANEL_TITLE = "About";
         private static final String ABOUT_PANEL_MESSAGE =
-            "NSU Chat v1.0\n" +
-            "Designer: ptrvsrg\n" +
-            "Developer: ptrvsrg\n";
+            "NSU Chat v1.0\n" + "Designer: ptrvsrg\n" + "Developer: ptrvsrg\n";
 
         @Override
         public void actionPerformed(ActionEvent e) {
