@@ -57,7 +57,10 @@ public class DTOHandleService {
     public void shutdown() {
         senders.shutdownNow();
         receivers.shutdownNow();
-        connection.close();
+        try {
+            connection.close();
+        } catch (IOException ignored) {
+        }
     }
 
     private class DTOHandleTask

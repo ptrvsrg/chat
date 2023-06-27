@@ -26,7 +26,9 @@ public class Controller {
 
     public boolean connect(InetAddress serverAddress, int serverPort) {
         if (connection != null) {
-            connection.close();
+            try {
+                connection.close();
+            } catch (IOException ignores) {}
         }
 
         try {
