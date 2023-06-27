@@ -1,7 +1,6 @@
 package ru.nsu.ccfit.petrov.chat.client.controller.service;
 
 import java.util.concurrent.Callable;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -11,8 +10,6 @@ import ru.nsu.ccfit.petrov.chat.client.listener.ListeningSupport;
 import ru.nsu.ccfit.petrov.chat.client.listener.event.ErrorEvent;
 import ru.nsu.ccfit.petrov.chat.core.connection.Connection;
 import ru.nsu.ccfit.petrov.chat.core.dto.DTO;
-import ru.nsu.ccfit.petrov.chat.core.dto.DTO.Subtype;
-import ru.nsu.ccfit.petrov.chat.core.dto.DTO.Type;
 
 @RequiredArgsConstructor
 public class RegisterService {
