@@ -52,7 +52,7 @@ public class RegisterService {
                     sendEvent(DTO.newLoginEvent(request.getUsername()));
                     log.info(String.format("Client %s is registered", connection.getSocket()
                                                                                 .getRemoteSocketAddress()));
-                    requestHandleService.handleRequests(connection);
+                    requestHandleService.handle(connection);
                     return;
                 }
             }

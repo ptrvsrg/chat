@@ -19,7 +19,7 @@ public class RequestHandleService {
     private final ExecutorService handlers = Executors.newFixedThreadPool(HANDLER_COUNT);
     private final UserRepository userRepository;
 
-    public void handleRequests(Connection connection) {
+    public void handle(Connection connection) {
         handlers.execute(new RequestHandleTask(connection));
     }
 
