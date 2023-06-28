@@ -59,7 +59,7 @@ public class StartMenuFrame {
         frame.setContentPane(createContentPane());
         frame.setVisible(true);
 
-        controller.addListener(new StartMenuListener());
+        controller.addListener(listener);
     }
 
     private JPanel createContentPane() {
