@@ -74,9 +74,13 @@ public class XmlFileConnection
         throws IOException {
         StringBuilder xmlFile = new StringBuilder();
 
-        String line;
         synchronized (in) {
-            while (!Objects.equals(line = in.readLine(), "")) {
+            while (true) {
+                String line = in.readLine();
+                if (line == null || line.equals("")) {
+                    break;
+                }
+
                 xmlFile.append(line);
                 xmlFile.append('\n');
             }
