@@ -7,6 +7,12 @@ import java.net.Socket;
 import lombok.RequiredArgsConstructor;
 import ru.nsu.ccfit.petrov.chat.core.dto.DTO;
 
+/**
+ * The type JavaObjectConnection is class that implements interface {@link Connection} for
+ * sending/receiving Java objects.
+ *
+ * @author ptrvsrg
+ */
 @RequiredArgsConstructor
 public class JavaObjectConnection
     implements Connection {

@@ -6,12 +6,17 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.Socket;
-import java.util.Objects;
 import javax.xml.bind.JAXBException;
 import lombok.RequiredArgsConstructor;
 import ru.nsu.ccfit.petrov.chat.core.dto.DTO;
 import ru.nsu.ccfit.petrov.chat.core.dto.XmlUtils;
 
+/**
+ * The type XmlFileConnection is class that implements interface {@link Connection} for
+ * sending/receiving XML files.
+ *
+ * @author ptrvsrg
+ */
 @RequiredArgsConstructor
 public class XmlFileConnection
     implements Connection {
