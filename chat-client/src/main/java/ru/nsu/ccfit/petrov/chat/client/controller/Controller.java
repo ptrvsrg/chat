@@ -54,14 +54,17 @@ public class Controller {
 
         RegisterService registerService = new RegisterService(listeningSupport);
         boolean registerResult = registerService.register(connection, username);
-        if (registerResult) {
-            dtoHandleService = new DTOHandleService(username, connection, listeningSupport);
-            dtoHandleService.handle();
-        }
-
         registerService.shutdown();
 
+        if (registerResult) {
+            dtoHandleService = new DTOHandleService(username, connection, listeningSupport);
+        }
+
         return registerResult;
+    }
+
+    public void handleDTO() {
+        dtoHandleService.handle();
     }
 
     public String[] getUsers() {
