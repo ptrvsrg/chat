@@ -42,40 +42,21 @@ public class RequestHandleService {
                 return;
             }
 
-            // Receive request
             DTO request = receiveRequest();
             if (request == null) {
                 removeUser();
                 return;
             }
 
-            // Send response and execute request actions
-            if (!DTO.isRequest(request)) {
-                if (!sendResponse(DTO.newErrorResponse(request.getId(), "DTO is not request"))) {
-                    removeUser();
-                    return;
-                }
-            } else if (DTO.isNewMessageRequest(request)) {
-                if (!sendResponse(DTO.newSuccessResponse(request.getId()))) {
-                    removeUser();
-                    return;
-                }
-                sendEvent(DTO.newNewMessageEvent(user.getUsername(), request.getMessage()));
-            } else if (DTO.isUserListRequest(request)) {
-                if (!sendResponse(
-                    DTO.newSuccessResponse(request.getId(), userRepository.getUsernames()))) {
-                    removeUser();
-                    return;
-                }
-            } else if (DTO.isLogoutRequest(request)) {
-                if (!sendResponse(DTO.newSuccessResponse(request.getId()))) {
-                    removeUser();
-                    return;
-                }
+            DTO response = createResponse(request);
+            if (!sendResponse(response)) {
                 removeUser();
+                return;
             }
 
-            handlers.execute(this);
+            if (executeRequestAction(request)) {
+                handlers.execute(this);
+            }
         }
 
         private DTO receiveRequest() {
@@ -92,6 +73,20 @@ public class RequestHandleService {
             return request;
         }
 
+        private DTO createResponse(DTO request) {
+            DTO response;
+            if (DTO.isNewMessageRequest(request)) {
+                response = DTO.newSuccessResponse(request.getId());
+            } else if (DTO.isUserListRequest(request)) {
+                response = DTO.newSuccessResponse(request.getId(), userRepository.getUsernames());
+            } else if (DTO.isLogoutRequest(request)) {
+                response = DTO.newSuccessResponse(request.getId());
+            } else {
+                response = DTO.newErrorResponse(request.getId(), "DTO is not request");
+            }
+            return response;
+        }
+
         private boolean sendResponse(DTO response) {
             try {
                 user.getConnection()
@@ -104,10 +99,21 @@ public class RequestHandleService {
             }
         }
 
-        private void sendEvent(DTO dto) {
+        private boolean executeRequestAction(DTO request) {
+            if (DTO.isNewMessageRequest(request)) {
+                sendEvent(DTO.newNewMessageEvent(user.getUsername(), request.getMessage()));
+            } else if (DTO.isLogoutRequest(request)) {
+                removeUser();
+                return false;
+            }
+
+            return true;
+        }
+
+        private void sendEvent(DTO event) {
             for (Connection connection : userRepository.getConnections()) {
                 try {
-                    connection.send(dto);
+                    connection.send(event);
                 } catch (IOException e) {
                     log.error("Failed to send event");
                     log.catching(Level.ERROR, e);
@@ -120,14 +126,17 @@ public class RequestHandleService {
                 return;
             }
 
-            sendEvent(DTO.newLogoutEvent(user.getUsername()));
             userRepository.removeUser(user.getUsername());
-            closeResource(user.getConnection());
+            sendEvent(DTO.newLogoutEvent(user.getUsername()));
+            log.info(String.format("Client %s disabled", user.getConnection()
+                                                             .getSocket()
+                                                             .getRemoteSocketAddress()));
+            closeConnection(user.getConnection());
         }
 
-        private void closeResource(AutoCloseable resource) {
+        private void closeConnection(Connection connection) {
             try {
-                resource.close();
+                connection.close();
             } catch (Exception e) {
                 log.error("Failed to close resource");
                 log.catching(Level.ERROR, e);
