@@ -39,12 +39,13 @@ public class RegisterService {
             while (!registrars.isShutdown()) {
                 DTO request = receiveRequest();
                 if (request == null) {
+                    closeConnection(connection);
                     return;
                 }
 
                 DTO response = createResponse(request);
-
                 if (!sendResponse(response)) {
+                    closeConnection(connection);
                     return;
                 }
 
@@ -114,6 +115,15 @@ public class RegisterService {
                     log.error("Failed to send event");
                     log.catching(Level.ERROR, e);
                 }
+            }
+        }
+
+        private void closeConnection(Connection connection) {
+            try {
+                connection.close();
+            } catch (Exception e) {
+                log.error("Failed to close resource");
+                log.catching(Level.ERROR, e);
             }
         }
     }
