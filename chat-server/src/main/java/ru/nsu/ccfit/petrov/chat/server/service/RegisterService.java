@@ -106,10 +106,10 @@ public class RegisterService {
             return userRepository.findUserByUsername(request.getUsername()) != null;
         }
 
-        private void sendEvent(DTO dto) {
+        private void sendEvent(DTO event) {
             for (Connection userConnection : userRepository.getConnections()) {
                 try {
-                    userConnection.send(dto);
+                    userConnection.send(event);
                 } catch (IOException e) {
                     log.error("Failed to send event");
                     log.catching(Level.ERROR, e);
