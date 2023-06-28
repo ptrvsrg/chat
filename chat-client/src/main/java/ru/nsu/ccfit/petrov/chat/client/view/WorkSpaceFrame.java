@@ -49,6 +49,7 @@ public class WorkSpaceFrame {
     private final JFrame frame = new JFrame();
     private final JPanel chatPanel = new JPanel();
     private final JTextArea inputArea = new JTextArea();
+    private final WorkSpaceListener listener = new WorkSpaceListener();
     private final Controller controller;
 
     public WorkSpaceFrame(Controller controller) {
@@ -60,7 +61,8 @@ public class WorkSpaceFrame {
         frame.setVisible(true);
 
         this.controller = controller;
-        controller.addListener(new WorkSpaceListener());
+        controller.addListener(listener);
+        controller.handleDTO();
     }
 
     private JPanel createContentPane() {
@@ -184,8 +186,10 @@ public class WorkSpaceFrame {
         @Override
         public void processEvent(Event event) {
             if (event instanceof ErrorEvent) {
+                ErrorEvent errorEvent = (ErrorEvent) event;
                 frame.dispose();
-                SwingUtilities.invokeLater(StartMenuFrame::new);
+                controller.removeListener(listener);
+                SwingUtilities.invokeLater(() -> new StartMenuFrame(errorEvent.getReason()));
             } else if (event instanceof LoginEvent) {
                 LoginEvent loginEvent = (LoginEvent) event;
                 String eventMessage = String.format("%s has joined the chat%n",

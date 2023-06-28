@@ -24,6 +24,10 @@ public class Controller {
         listeningSupport.addListener(listener);
     }
 
+    public void removeListener(Listener listener) {
+        listeningSupport.removeListener(listener);
+    }
+
     public boolean connect(InetAddress serverAddress, int serverPort) {
         if (connection != null) {
             try {

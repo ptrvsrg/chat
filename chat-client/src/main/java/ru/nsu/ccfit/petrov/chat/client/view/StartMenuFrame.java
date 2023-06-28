@@ -49,6 +49,7 @@ public class StartMenuFrame {
     private final JLabel errorMessageLabel = new JLabel();
     private final Controller controller = new Controller();
     private final GridBagConstraints contentPaneConstraints = new GridBagConstraints();
+    private final StartMenuListener listener = new StartMenuListener();
 
     public StartMenuFrame() {
         frame.setTitle(TITLE);
@@ -235,6 +236,7 @@ public class StartMenuFrame {
 
             SwingUtilities.invokeLater(() -> {
                 frame.dispose();
+                controller.removeListener(listener);
                 new WorkSpaceFrame(controller);
             });
         }
