@@ -69,6 +69,7 @@ public class Controller {
 
     public String[] getUsers() {
         if (dtoHandleService == null) {
+            listeningSupport.notifyListeners(new ErrorEvent("Сlient not registered"));
             return new String[]{};
         }
 
@@ -84,6 +85,7 @@ public class Controller {
 
     public void sendNewMessage(String message) {
         if (dtoHandleService == null) {
+            listeningSupport.notifyListeners(new ErrorEvent("Сlient not registered"));
             return;
         }
 
@@ -96,6 +98,7 @@ public class Controller {
 
     public void logout() {
         if (dtoHandleService == null) {
+            listeningSupport.notifyListeners(new ErrorEvent("Сlient not registered"));
             return;
         }
 
