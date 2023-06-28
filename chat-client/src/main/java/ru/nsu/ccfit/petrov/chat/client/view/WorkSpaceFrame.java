@@ -8,6 +8,8 @@ import java.awt.Image;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.net.URL;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
@@ -56,7 +58,8 @@ public class WorkSpaceFrame {
         frame.setTitle(TITLE);
         frame.setSize(WIDTH, HEIGHT);
         frame.setLocationRelativeTo(null);
-        frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        frame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
+        frame.addWindowListener(new WindowClosingListener(frame));
         frame.setContentPane(createContentPane());
         frame.setVisible(true);
 
@@ -176,6 +179,19 @@ public class WorkSpaceFrame {
         public void actionPerformed(ActionEvent e) {
             String[] users = controller.getUsers();
             SwingUtilities.invokeLater(() -> new UsersDialog(frame, users));
+        }
+    }
+
+    @RequiredArgsConstructor
+    private class WindowClosingListener
+        extends WindowAdapter {
+
+        private final JFrame owner;
+
+        @Override
+        public void windowClosing(WindowEvent e) {
+            controller.logout();
+            owner.dispose();
         }
     }
 
