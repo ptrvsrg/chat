@@ -35,7 +35,6 @@ public class XmlFileConnection
     }
 
     @Override
-    @Synchronized
     public void send(DTO dto)
         throws IOException {
         if (out == null) {
@@ -49,13 +48,14 @@ public class XmlFileConnection
             throw new IOException("Invalid DTO format : " + e);
         }
 
-        out.write(xml);
-        out.newLine();
-        out.flush();
+        synchronized (out) {
+            out.write(xml);
+            out.newLine();
+            out.flush();
+        }
     }
 
     @Override
-    @Synchronized
     public DTO receive()
         throws IOException {
         if (in == null) {
@@ -76,9 +76,11 @@ public class XmlFileConnection
         StringBuilder xmlFile = new StringBuilder();
 
         String line;
-        while (!Objects.equals(line = in.readLine(), "")) {
-            xmlFile.append(line);
-            xmlFile.append('\n');
+        synchronized (in) {
+            while (!Objects.equals(line = in.readLine(), "")) {
+                xmlFile.append(line);
+                xmlFile.append('\n');
+            }
         }
 
         return xmlFile.toString();

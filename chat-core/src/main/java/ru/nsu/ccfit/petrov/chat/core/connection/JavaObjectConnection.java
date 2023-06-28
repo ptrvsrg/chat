@@ -30,18 +30,18 @@ public class JavaObjectConnection
     }
 
     @Override
-    @Synchronized
     public void send(DTO dto)
         throws IOException {
         if (out == null) {
             throw new IOException("Connection not established");
         }
 
-        out.writeObject(dto);
+        synchronized (out) {
+            out.writeObject(dto);
+        }
     }
 
     @Override
-    @Synchronized
     public DTO receive()
         throws IOException {
         if (in == null) {
@@ -49,7 +49,9 @@ public class JavaObjectConnection
         }
 
         try {
-            return (DTO) in.readObject();
+            synchronized (in) {
+                return (DTO) in.readObject();
+            }
         } catch (ClassNotFoundException | ClassCastException e) {
             throw new IOException("Invalid DTO format : " + e);
         }
