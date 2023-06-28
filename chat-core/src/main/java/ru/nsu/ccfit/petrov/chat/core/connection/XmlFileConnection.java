@@ -9,7 +9,6 @@ import java.net.Socket;
 import java.util.Objects;
 import javax.xml.bind.JAXBException;
 import lombok.RequiredArgsConstructor;
-import lombok.Synchronized;
 import ru.nsu.ccfit.petrov.chat.core.dto.DTO;
 import ru.nsu.ccfit.petrov.chat.core.dto.XmlUtils;
 

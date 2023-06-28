@@ -5,7 +5,6 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import lombok.RequiredArgsConstructor;
-import lombok.Synchronized;
 import ru.nsu.ccfit.petrov.chat.core.dto.DTO;
 
 @RequiredArgsConstructor
