@@ -84,29 +84,6 @@ public class WorkSpaceFrame {
                                JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
     }
 
-    private void addEventMessage(String message) {
-        JLabel eventMessageLabel = new JLabel(String.format("<html>%s</html>", message),
-                                              SwingConstants.CENTER);
-        eventMessageLabel.setFont(EVENT_FONT);
-        eventMessageLabel.setBorder(BorderFactory.createEmptyBorder(5, 0, 5, 0));
-        chatPanel.add(eventMessageLabel);
-    }
-
-    private void addUserMessage(String username, String message, boolean isCurrentUser) {
-        JLabel usernameLabel = new JLabel(username + (isCurrentUser ? " (You)" : ""), SwingConstants.LEFT);
-        usernameLabel.setFont(USERNAME_TITLE_FONT);
-        usernameLabel.setBorder(BorderFactory.createEmptyBorder(10, 0, 5, 0));
-        chatPanel.add(usernameLabel);
-
-        JLabel messageLabel = new JLabel();
-        messageLabel.setText("<html>" + message.replace("<", "&lt;")
-                                               .replace(">", "&gt;")
-                                               .replace("\n", "<br/>") + "</html>");
-        messageLabel.setFont(MESSAGE_FONT);
-        messageLabel.setBorder(BorderFactory.createEmptyBorder(0, 0, 10, 0));
-        chatPanel.add(messageLabel);
-    }
-
     private JPanel createToolPanel() {
         JPanel toolPanel = new JPanel(new BorderLayout());
         toolPanel.setBackground(TOOL_PANEL_COLOR);
@@ -168,6 +145,7 @@ public class WorkSpaceFrame {
             }
 
             inputArea.setText("");
+            inputArea.repaint();
             controller.sendNewMessage(message);
         }
     }
@@ -202,10 +180,7 @@ public class WorkSpaceFrame {
         @Override
         public void processEvent(Event event) {
             if (event instanceof ErrorEvent) {
-                ErrorEvent errorEvent = (ErrorEvent) event;
                 frame.dispose();
-                controller.removeListener(listener);
-                SwingUtilities.invokeLater(() -> new StartMenuFrame(errorEvent.getReason()));
             } else if (event instanceof LoginEvent) {
                 LoginEvent loginEvent = (LoginEvent) event;
                 String eventMessage = String.format("%s has joined the chat%n",
@@ -227,6 +202,30 @@ public class WorkSpaceFrame {
                 addEventMessage(eventMessage);
                 chatPanel.repaint();
             }
+        }
+
+        private void addEventMessage(String message) {
+            JLabel eventMessageLabel = new JLabel(String.format("<html>%s</html>", message),
+                                                  SwingConstants.CENTER);
+            eventMessageLabel.setFont(EVENT_FONT);
+            eventMessageLabel.setBorder(BorderFactory.createEmptyBorder(5, 0, 5, 0));
+            chatPanel.add(eventMessageLabel);
+        }
+
+        private void addUserMessage(String username, String message, boolean isCurrentUser) {
+            JLabel usernameLabel = new JLabel(username + (isCurrentUser ? " (You)" : ""),
+                                              SwingConstants.LEFT);
+            usernameLabel.setFont(USERNAME_TITLE_FONT);
+            usernameLabel.setBorder(BorderFactory.createEmptyBorder(10, 0, 5, 0));
+            chatPanel.add(usernameLabel);
+
+            JLabel messageLabel = new JLabel();
+            messageLabel.setText("<html>" + message.replace("<", "&lt;")
+                                                   .replace(">", "&gt;")
+                                                   .replace("\n", "<br/>") + "</html>");
+            messageLabel.setFont(MESSAGE_FONT);
+            messageLabel.setBorder(BorderFactory.createEmptyBorder(0, 0, 10, 0));
+            chatPanel.add(messageLabel);
         }
     }
 }
