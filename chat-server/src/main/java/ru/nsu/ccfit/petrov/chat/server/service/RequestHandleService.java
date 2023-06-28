@@ -11,6 +11,11 @@ import ru.nsu.ccfit.petrov.chat.core.dto.DTO;
 import ru.nsu.ccfit.petrov.chat.server.database.User;
 import ru.nsu.ccfit.petrov.chat.server.database.UserRepository;
 
+/**
+ * The type RequestHandleService is class that describes service for handling requests.
+ *
+ * @author ptrvsrg
+ */
 @Log4j2
 @RequiredArgsConstructor
 public class RequestHandleService {
@@ -19,12 +24,20 @@ public class RequestHandleService {
     private final ExecutorService handlers = Executors.newFixedThreadPool(HANDLER_COUNT);
     private final UserRepository userRepository;
 
+    /**
+     * Start handling request from client by connection.
+     *
+     * @param connection the connection
+     */
     public void handle(Connection connection) {
         handlers.execute(new RequestHandleTask(connection));
     }
 
+    /**
+     * Shutdown.
+     */
     public void shutdown() {
-        handlers.shutdownNow();
+        handlers.shutdown();
     }
 
     private class RequestHandleTask
@@ -32,6 +45,11 @@ public class RequestHandleService {
 
         private final User user;
 
+        /**
+         * Instantiate a new RequestHandleTask by connection.
+         *
+         * @param connection the connection
+         */
         public RequestHandleTask(Connection connection) {
             this.user = userRepository.findUserByConnection(connection);
         }

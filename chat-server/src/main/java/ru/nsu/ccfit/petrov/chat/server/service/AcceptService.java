@@ -12,6 +12,12 @@ import ru.nsu.ccfit.petrov.chat.core.connection.Connection;
 import ru.nsu.ccfit.petrov.chat.core.connection.ConnectionFactory;
 import ru.nsu.ccfit.petrov.chat.core.dto.DTOFormat;
 
+/**
+ * The type AcceptService is class that describes service for accepting clients, creating
+ * connections and forwarding for registration.
+ *
+ * @author ptrvsrg
+ */
 @Log4j2
 @RequiredArgsConstructor
 public class AcceptService {
@@ -22,10 +28,16 @@ public class AcceptService {
     private final DTOFormat dtoFormat;
     private final RegisterService registerService;
 
+    /**
+     * Start accepting clients.
+     */
     public void accept() {
         acceptor.execute(new AcceptTask());
     }
 
+    /**
+     * Shutdown accepting clients.
+     */
     public void shutdown() {
         acceptor.shutdown();
     }
@@ -40,18 +52,21 @@ public class AcceptService {
                 if (clientSocket == null) {
                     continue;
                 }
-                log.info(String.format("Client %s accepted", clientSocket.getRemoteSocketAddress()));
+                log.info(
+                    String.format("Client %s accepted", clientSocket.getRemoteSocketAddress()));
 
                 if (setTimeout(clientSocket)) {
                     continue;
                 }
-                log.info(String.format("Set timeout for client %s", clientSocket.getRemoteSocketAddress()));
+                log.info(String.format("Set timeout for client %s",
+                                       clientSocket.getRemoteSocketAddress()));
 
                 Connection connection = createConnection(clientSocket);
                 if (connection == null) {
                     continue;
                 }
-                log.info(String.format("Create read/write client %s connection", clientSocket.getRemoteSocketAddress()));
+                log.info(String.format("Create read/write client %s connection",
+                                       clientSocket.getRemoteSocketAddress()));
 
                 registerService.register(connection);
             }
@@ -93,10 +108,10 @@ public class AcceptService {
                 closeResource(connection);
                 return null;
             }
-            
+
             return connection;
         }
-        
+
         private void closeResource(AutoCloseable resource) {
             try {
                 resource.close();

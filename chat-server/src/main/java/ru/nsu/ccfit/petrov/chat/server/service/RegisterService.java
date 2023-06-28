@@ -11,6 +11,12 @@ import ru.nsu.ccfit.petrov.chat.core.dto.DTO;
 import ru.nsu.ccfit.petrov.chat.server.database.User;
 import ru.nsu.ccfit.petrov.chat.server.database.UserRepository;
 
+/**
+ * The type RegisterService is class that describes service for registration and forwarding for
+ * handling requests.
+ *
+ * @author ptrvsrg
+ */
 @Log4j2
 @RequiredArgsConstructor
 public class RegisterService {
@@ -20,12 +26,20 @@ public class RegisterService {
     private final UserRepository userRepository;
     private final RequestHandleService requestHandleService;
 
+    /**
+     * Register client by connection.
+     *
+     * @param connection the connection
+     */
     public void register(Connection connection) {
         registrars.execute(new RegisterTask(connection));
     }
 
+    /**
+     * Shutdown.
+     */
     public void shutdown() {
-        registrars.shutdownNow();
+        registrars.shutdown();
     }
 
     @RequiredArgsConstructor

@@ -7,6 +7,9 @@ import java.util.stream.Collectors;
 import lombok.Getter;
 import ru.nsu.ccfit.petrov.chat.core.connection.Connection;
 
+/**
+ * The type UserRepositoryInMemory is class that implements {@link UserRepository} for storing data in memory.
+ */
 @Getter
 public class UserRepositoryInMemory
     implements UserRepository {

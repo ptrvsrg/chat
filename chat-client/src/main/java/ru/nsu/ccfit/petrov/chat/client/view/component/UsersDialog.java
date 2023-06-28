@@ -11,6 +11,11 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.border.EmptyBorder;
 
+/**
+ * The type UsersDialog is class that describes dialog that is containing users.
+ *
+ * @author ptrvsrg
+ */
 public class UsersDialog
     extends JDialog {
 
@@ -20,6 +25,12 @@ public class UsersDialog
     private static final Font USER_ENTRY_FONT = new Font(Font.DIALOG, Font.PLAIN, 24);
     private final String[] users;
 
+    /**
+     * Instantiates a new UsersDialog.
+     *
+     * @param owner the owner
+     * @param users the users
+     */
     public UsersDialog(JFrame owner, String[] users) {
         super(owner, true);
 

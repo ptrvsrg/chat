@@ -18,6 +18,12 @@ import ru.nsu.ccfit.petrov.chat.client.listener.event.NewMessageEvent;
 import ru.nsu.ccfit.petrov.chat.core.connection.Connection;
 import ru.nsu.ccfit.petrov.chat.core.dto.DTO;
 
+/**
+ * The type DTOHandleService is class that describes service for sending requests and handling
+ * responses and events.
+ *
+ * @author ptrvsrg
+ */
 @RequiredArgsConstructor
 public class DTOHandleService {
 
@@ -30,10 +36,19 @@ public class DTOHandleService {
     private final Connection connection;
     private final ListeningSupport listeningSupport;
 
+    /**
+     * Start handling responses and events.
+     */
     public void handle() {
         CompletableFuture.runAsync(new DTOHandleTask(), receivers);
     }
 
+    /**
+     * Send request.
+     *
+     * @param request the request
+     * @return the response
+     */
     public DTO sendRequest(DTO request) {
         CompletableFuture<DTO> futureResponse = new CompletableFuture<>();
         CompletableFuture.runAsync(() -> {
@@ -54,6 +69,9 @@ public class DTOHandleService {
         return null;
     }
 
+    /**
+     * Shutdown.
+     */
     public void shutdown() {
         senders.shutdownNow();
         receivers.shutdownNow();

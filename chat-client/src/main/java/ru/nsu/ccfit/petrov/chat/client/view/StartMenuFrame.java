@@ -24,6 +24,12 @@ import ru.nsu.ccfit.petrov.chat.client.listener.Listener;
 import ru.nsu.ccfit.petrov.chat.client.listener.event.ErrorEvent;
 import ru.nsu.ccfit.petrov.chat.client.listener.event.Event;
 
+/**
+ * The type StartMenuFrame is class that describes start menu window, handles entering server and
+ * user data, registers user and prints errors.
+ *
+ * @author ptrvsrg
+ */
 public class StartMenuFrame {
 
     private static final String TITLE = "Welcome to NSU Chat";
@@ -51,6 +57,9 @@ public class StartMenuFrame {
     private final GridBagConstraints contentPaneConstraints = new GridBagConstraints();
     private final StartMenuListener listener = new StartMenuListener();
 
+    /**
+     * Instantiate a new StartMenuFrame.
+     */
     public StartMenuFrame() {
         frame.setTitle(TITLE);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

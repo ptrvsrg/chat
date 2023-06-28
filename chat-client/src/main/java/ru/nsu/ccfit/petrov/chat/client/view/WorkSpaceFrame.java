@@ -34,11 +34,17 @@ import ru.nsu.ccfit.petrov.chat.client.listener.event.LogoutEvent;
 import ru.nsu.ccfit.petrov.chat.client.listener.event.NewMessageEvent;
 import ru.nsu.ccfit.petrov.chat.client.view.component.UsersDialog;
 
+/**
+ * The type WorkSpaceFrame is class that describes main chat window, handles sending, showing users
+ * and disconnecting.
+ *
+ * @author ptrvsrg
+ */
 public class WorkSpaceFrame {
 
     private static final String TITLE = "NSU Chat";
-    private static final String SEND_BUTTON_ICON_FILE = "send_button.png";
-    private static final String USERS_BUTTON_ICON_FILE = "users_button.png";
+    private static final String SEND_BUTTON_ICON_FILE = "static/send_button.png";
+    private static final String USERS_BUTTON_ICON_FILE = "static/users_button.png";
     private static final int WIDTH = 1200;
     private static final int HEIGHT = 700;
     private static final int BUTTON_ICON_SIZE = 32;
@@ -54,6 +60,11 @@ public class WorkSpaceFrame {
     private final WorkSpaceListener listener = new WorkSpaceListener();
     private final Controller controller;
 
+    /**
+     * Instantiates a new WorkSpaceFrame.
+     *
+     * @param controller the controller
+     */
     public WorkSpaceFrame(Controller controller) {
         frame.setTitle(TITLE);
         frame.setSize(WIDTH, HEIGHT);

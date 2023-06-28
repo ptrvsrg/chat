@@ -5,6 +5,11 @@ import java.io.InputStream;
 import java.util.Properties;
 import ru.nsu.ccfit.petrov.chat.core.dto.DTOFormat;
 
+/**
+ * The type ClientConfig is utility class that parses config file and returns available properties.
+ *
+ * @author ptrvsrg
+ */
 public class ClientConfig {
 
     private static final String CONFIG_FILE_NAME = "client.properties";
@@ -22,6 +27,13 @@ public class ClientConfig {
         properties.load(configFile);
     }
 
+    /**
+     * Gets DTO format.
+     *
+     * @return the DTO format
+     * @throws IOException           If it was not possible to parse the configuration file
+     * @throws IllegalStateException If parsed DTO format is unsupported
+     */
     public static DTOFormat getDTOFormat()
         throws IOException {
         if (properties == null) {

@@ -11,12 +11,24 @@ import ru.nsu.ccfit.petrov.chat.client.listener.event.ErrorEvent;
 import ru.nsu.ccfit.petrov.chat.core.connection.Connection;
 import ru.nsu.ccfit.petrov.chat.core.dto.DTO;
 
+/**
+ * The type RegisterService is class that describes service for registration
+ *
+ * @author ptrvsrg
+ */
 @RequiredArgsConstructor
 public class RegisterService {
 
     private final ExecutorService registrar = Executors.newSingleThreadExecutor();
     private final ListeningSupport listeningSupport;
 
+    /**
+     * Register.
+     *
+     * @param connection the connection
+     * @param username   the username
+     * @return {@code true} if client successfully registered, {@code false} otherwise
+     */
     public boolean register(Connection connection, String username) {
         Future<DTO> futureResponse = registrar.submit(new RegisterTask(connection, username));
 
@@ -36,6 +48,9 @@ public class RegisterService {
         return true;
     }
 
+    /**
+     * Shutdown.
+     */
     public void shutdown() {
         registrar.shutdownNow();
     }
